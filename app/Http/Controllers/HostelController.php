@@ -131,7 +131,7 @@ class HostelController extends Controller
 
         $data['block'] = DB::table('tblblock')->where('id', $request->id)->first();
 
-        return view('hostel.block.getBlock', compact('data'));
+        return view('hostel.block_library.block.getBlock', compact('data'));
 
     }
 
