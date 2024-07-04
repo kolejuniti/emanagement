@@ -35,7 +35,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hostel/getStudentList', [App\Http\Controllers\HostelController::class, 'getStudentList']);
     Route::get('/hostel/block', [App\Http\Controllers\HostelController::class, 'indexBlock'])->name('hostel.block');
     Route::post('/hostel/block/store', [App\Http\Controllers\HostelController::class, 'storeBlock'])->name('hostel.block.store');
-    Route::post('/hostel/block/getBlock', [App\Http\Controllers\HostelController::class, 'getBlock'])->name('hostel.block.getBlock');
+    Route::post('/hostel/block/getBlock', [App\Http\Controllers\HostelController::class, 'getBlock'])->name('hostel.block.store');
     Route::post('/hostel/block/delete', [App\Http\Controllers\HostelController::class, 'deleteBlock'])->name('hostel.block.delete');
     Route::get('/hostel/blockUnit', [App\Http\Controllers\HostelController::class, 'indexBlockUnit'])->name('hostel.blockUnit');
     Route::post('/hostel/blockUnit/store', [App\Http\Controllers\HostelController::class, 'storeBlockUnit'])->name('hostel.blockUnit.store');
