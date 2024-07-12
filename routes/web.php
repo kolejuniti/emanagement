@@ -51,6 +51,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hostel/register/{id}/getStudentInfo', [App\Http\Controllers\HostelController::class, 'getStudentInfo']);
     Route::post('/hostel/register/{id}/registerStudent', [App\Http\Controllers\HostelController::class, 'registerStudent']);
     Route::post('/hostel/register/{id}/deleteStudent', [App\Http\Controllers\HostelController::class, 'deleteStudent']);
+    Route::get('/hostel/student/checkout', [App\Http\Controllers\HostelController::class, 'hostelCheckout'])->name('hostel.student.checkout');
+    Route::post('/hostel/student/checkout/getStudentInfo2', [App\Http\Controllers\HostelController::class, 'getStudentInfo2']);
+    Route::post('/hostel/student/checkout/checkoutStudent', [App\Http\Controllers\HostelController::class, 'checkoutStudent']);
     Route::get('/hostel/report/studentHostelReport', [App\Http\Controllers\HostelController::class, 'studentHostelReport'])->name('hostel.report.studentHostelReport');
     Route::post('/hostel/report/studentHostelReport2', [App\Http\Controllers\HostelController::class, 'studentHostelReport'])->name('hostel.report.studentHostelReport2');
     Route::get('/hostel/report/unitStatus', [App\Http\Controllers\HostelController::class, 'unitStatus'])->name('hostel.report.unitStatus');
