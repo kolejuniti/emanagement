@@ -515,7 +515,7 @@ class HostelController extends Controller
                         if($count->total_student < $detail->capacity)
                         {
 
-                            if(DB::table('tblstudent_hostel')->where([['student_ic', $data->student], ['block_unit_id', $data->id,]])->exists())
+                            if(DB::table('tblstudent_hostel')->where([['student_ic', $data->student], ['block_unit_id', $data->id,], ['status', 'IN']])->exists())
                             {
 
                                 $alert = "Student already exist in this unit!";
@@ -621,6 +621,154 @@ class HostelController extends Controller
         $datas = $hostelData;
 
         return response()->json(['message' => "Success", 'data' => $datas]);
+
+    }
+
+    public function hostelCheckout()
+    {
+
+        return view('hostel.student.hostel_checkout.checkoutStudent');
+
+    }
+
+    public function getStudentInfo2(Request $request)
+    {
+
+        $data = DB::connection('mysql2')->table('students')
+                ->join('tblstudent_status', 'students.status', 'tblstudent_status.id')
+                ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+                ->join('sessions AS t1', 'students.intake', 't1.SessionID')
+                ->join('sessions AS t2', 'students.session', 't2.SessionID')
+                ->select('students.*', 'tblstudent_status.name AS status', 'tblprogramme.progname AS program', 'students.program AS progid', 't1.SessionName AS intake_name', 't2.SessionName AS session_name')
+                ->where('ic', $request->student)->first();
+
+        $info = DB::table('tblstudent_hostel')
+            ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', '=', 'tblblock_unit.id')
+            ->join('tblblock', 'tblblock_unit.block_id', '=', 'tblblock.id')
+            ->where([
+                ['tblstudent_hostel.student_ic', $request->student],
+                ['tblstudent_hostel.status', 'IN']
+            ])
+            ->select('tblstudent_hostel.id', 'tblblock.name', 'tblblock.location', 'tblblock_unit.no_unit')
+            ->first();
+
+        if (!$info) {
+            $info = (object) [
+                'name' => null,
+                'location' => null,
+                'no_unit' => null
+            ];
+        }
+
+        $history = DB::table('tblstudent_hostel')
+                ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', '=', 'tblblock_unit.id')
+                ->join('tblblock', 'tblblock_unit.block_id', '=', 'tblblock.id')
+                ->join(DB::connection('mysql2')->getDatabaseName() . '.students as students', 'tblstudent_hostel.student_ic', '=', 'students.ic')
+                ->where('tblstudent_hostel.student_ic', $request->student)
+                ->orderBy('tblstudent_hostel.entry_date', 'DESC')
+                ->select('tblblock.name as block', 'tblblock.location', 'tblblock_unit.no_unit', 'tblstudent_hostel.status', 'students.name')
+                ->get();
+            
+
+        // return back()->with(['data' => $student]);
+
+        // Return the data as part of the response
+        return response()->json([
+            'data' => $data,
+            'info' => $info,
+            'history' => $history,
+        ]);
+
+    }
+
+    public function checkoutStudent(Request $request)
+    {
+
+        $datas = json_decode($request->storeStudent);
+
+            if($datas->id)
+            {
+
+                try{ 
+                    DB::beginTransaction();
+                    DB::connection()->enableQueryLog();
+
+                    try{
+
+                    DB::table('tblstudent_hostel')->where('id', $datas->id)
+                    ->update([
+                        'status' => 'OUT',
+                        'exit_date' => now()
+                    ]);
+
+                    $alert = "Success";
+
+                    }catch(QueryException $ex){
+                        DB::rollback();
+                        if($ex->getCode() == 23000){
+                            return ["message"=>"Class code already existed inside the system"];
+                        }else{
+                            \Log::debug($ex);
+                            return ["message"=>"DB Error"];
+                        }
+                    }
+
+                    DB::commit();
+                }catch(Exception $ex){
+                    return ["message"=>"Error"];
+                }
+
+            }else{
+
+                return ["message"=>"Please select all required field!"];
+
+            }
+
+            $data = DB::connection('mysql2')->table('students')
+                ->join('tblstudent_status', 'students.status', 'tblstudent_status.id')
+                ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+                ->join('sessions AS t1', 'students.intake', 't1.SessionID')
+                ->join('sessions AS t2', 'students.session', 't2.SessionID')
+                ->select('students.*', 'tblstudent_status.name AS status', 'tblprogramme.progname AS program', 'students.program AS progid', 't1.SessionName AS intake_name', 't2.SessionName AS session_name')
+                ->where('ic', $datas->student)->first();
+
+            $info = DB::table('tblstudent_hostel')
+                ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', '=', 'tblblock_unit.id')
+                ->join('tblblock', 'tblblock_unit.block_id', '=', 'tblblock.id')
+                ->where([
+                    ['tblstudent_hostel.student_ic', $datas->student],
+                    ['tblstudent_hostel.status', 'IN']
+                ])
+                ->select('tblstudent_hostel.id', 'tblblock.name', 'tblblock.location', 'tblblock_unit.no_unit')
+                ->first();
+
+            if (!$info) {
+                $info = (object) [
+                    'name' => null,
+                    'location' => null,
+                    'no_unit' => null
+                ];
+            }
+
+            $history = DB::table('tblstudent_hostel')
+                    ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', '=', 'tblblock_unit.id')
+                    ->join('tblblock', 'tblblock_unit.block_id', '=', 'tblblock.id')
+                    ->join(DB::connection('mysql2')->getDatabaseName() . '.students as students', 'tblstudent_hostel.student_ic', '=', 'students.ic')
+                    ->where('tblstudent_hostel.student_ic', $datas->student)
+                    ->orderBy('tblstudent_hostel.entry_date', 'DESC')
+                    ->select('tblblock.name as block', 'tblblock.location', 'tblblock_unit.no_unit', 'tblstudent_hostel.status', 'students.name')
+                    ->get();
+                
+
+            // return back()->with(['data' => $student]);
+
+            // Return the data as part of the response
+            return response()->json([
+                'message' => $alert,
+                'data' => $data,
+                'info' => $info,
+                'history' => $history,
+            ]);
 
     }
 
