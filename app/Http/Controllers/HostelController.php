@@ -219,6 +219,7 @@ class HostelController extends Controller
             $datas = DB::table('tblblock_unit')
             ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
             ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
+            ->where('tblblock_unit.block_id', $data->block)
             ->select('tblblock_unit.*', 'tblblock.name AS block', 'tblresident.name AS resident')
             ->get();
 
