@@ -514,7 +514,7 @@ class HostelController extends Controller
                         $baseQuery = function() use ($data){
 
                             return DB::table('tblstudent_hostel')
-                                   ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', 'tblblock_unit.id')
+                                   ->leftjoin('tblblock_unit', 'tblstudent_hostel.block_unit_id', 'tblblock_unit.id')
                                    ->where('block_unit_id', $data->id);
 
                         };
@@ -522,7 +522,7 @@ class HostelController extends Controller
                         $count = ($baseQuery)()->where('tblstudent_hostel.status', 'IN')->select(DB::raw('COUNT(tblstudent_hostel.id) AS total_student'))
                                  ->first();
 
-                        $detail = ($baseQuery)()->select('tblblock_unit.capacity')->first();
+                        $detail = DB::table('tblblock_unit')->where('id', $data->id)->first();
 
                         if($count->total_student < $detail->capacity)
                         {
@@ -534,15 +534,24 @@ class HostelController extends Controller
 
                             }else{
 
-                                DB::table('tblstudent_hostel')->insert([
-                                    'student_ic' => $data->student,
-                                    'block_unit_id' => $data->id,
-                                    'entry_date' => now(),
-                                    'status' => 'IN',
-                                    'exit_date' => null
-                                ]);
-    
-                                $alert = "Success";
+                                if(DB::table('tblstudent_hostel')->where([['student_ic', $data->student], ['status', 'IN']])->exists())
+                                {
+
+                                    $alert = "Student already exist in another unit!";
+
+                                }else{
+
+                                    DB::table('tblstudent_hostel')->insert([
+                                        'student_ic' => $data->student,
+                                        'block_unit_id' => $data->id,
+                                        'entry_date' => now(),
+                                        'status' => 'IN',
+                                        'exit_date' => null
+                                    ]);
+        
+                                    $alert = "Success";
+
+                                }
 
                             }
 
