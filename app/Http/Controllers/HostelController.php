@@ -931,6 +931,7 @@ class HostelController extends Controller
 
         // Step 1: Fetch the student data from the mysql2 connection
         $students = DB::connection('mysql2')->table('students')
+        ->where('status', 2)
         ->select('ic', 'name')
         ->get();
 
