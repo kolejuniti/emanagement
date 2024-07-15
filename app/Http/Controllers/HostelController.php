@@ -940,6 +940,7 @@ class HostelController extends Controller
         ->join('tblprogramme', 'students.program', 'tblprogramme.id')
         ->join('sessions AS t1', 'students.intake', 't1.SessionID')
         ->join('sessions AS t2', 'students.session', 't2.SessionID')
+        ->where('students.status', 2)
         ->select('students.ic', 'students.name', 'students.no_matric', 'students.semester', 'tblstudent_status.name AS status', 
                  'tblprogramme.progname AS program', 'students.program AS progid', 
                  't1.SessionName AS intake_name', 't2.SessionName AS session_name')
