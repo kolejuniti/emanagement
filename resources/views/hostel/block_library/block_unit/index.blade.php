@@ -136,43 +136,6 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    @foreach ($data['block_unit'] as $key =>$bl)
-                                                        <tr>
-                                                            <td>
-                                                            {{ $key+1 }}
-                                                            </td>
-                                                            <td >
-                                                            {{ $bl->block }}
-                                                            </td>
-                                                            <td >
-                                                            {{ $bl->no_unit }}
-                                                            </td>
-                                                            <td >
-                                                            {{ $bl->capacity }}
-                                                            </td>
-                                                            <td >
-                                                              {{ $data['residents'][$key]->total_student }}/{{ $bl->capacity }}
-                                                            </td>
-                                                            <td >
-                                                            {{ $bl->resident }}
-                                                            </td>
-                                                            <td >
-                                                            {{ $bl->status }}
-                                                            </td>
-                                                            <td class="project-actions text-right" style="text-align: center;">
-                                                              <a class="btn btn-info btn-sm pr-2" href="#" onclick="getBlockUnit('{{ $bl->id }}')">
-                                                                  <i class="ti-pencil-alt">
-                                                                  </i>
-                                                                  Edit
-                                                              </a>
-                                                              <a class="btn btn-danger btn-sm" href="#" onclick="deleteBlockUnit('{{ $bl->id }}')">
-                                                                  <i class="ti-trash">
-                                                                  </i>
-                                                                  Delete
-                                                              </a>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
                                                     </tbody>
                                                     <tfoot class="tfoot-themed">
                                                         <tr>
@@ -212,6 +175,84 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript">
+
+  $(document).on('change', '#block', async function(e){
+    block = $(e.target).val();
+
+    getBlockUnits(block);
+  }); 
+
+  function getBlockUnits(block)
+  {
+    
+    return $.ajax({
+            headers: {'X-CSRF-TOKEN':  $('meta[name="csrf-token"]').attr('content')},
+            url      : "{{ url('hostel/blockUnit/getBlockUnits') }}",
+            method   : 'POST',
+            data 	 : {block: block},
+            error:function(err){
+                alert("Error");
+                console.log(err);
+            },
+            success  : function(res){
+              try{
+                    
+                // Start with an empty table structure
+                var newTable = "<table id='table_projectprogress_course' class='table table-striped projects display dataTable no-footer' style='width: 100%;'>" +
+                    "<thead class='thead-themed'>" +
+                    "<tr>" +
+                    "<th>No.</th>" +
+                    "<th>Block</th>" +
+                    "<th>No. Unit</th>" +
+                    "<th>Capacity</th>" +
+                    "<th>Total Resident</th>" +
+                    "<th>Resident</th>" +
+                    "<th>Unit Status</th>" +
+                    "<th></th>" +
+                    "</tr>" +
+                    "</thead>" +
+                    "<tbody>";
+
+                // Loop through each block unit data item
+                $.each(res.data, function(i, item) {
+                    var newRow = "<tr>" +
+                        "<td>" + (i + 1) + "</td>" +
+                        "<td>" + item.block + "</td>" +
+                        "<td>" + item.no_unit + "</td>" +
+                        "<td>" + item.capacity + "</td>" +
+                        "<td>" + item.total_student + "/" + item.capacity + "</td>" + // Adjust according to your data structure
+                        "<td>" + item.resident + "</td>" +
+                        "<td>" + item.status + "</td>" +
+                        "<td class='project-actions text-right' style='text-align: center;'>" +
+                        "<a class='btn btn-info btn-sm pr-2' href='#' onclick='getBlockUnit(\"" + item.id + "\")'>" +
+                        "<i class='ti-pencil-alt'></i> Edit" +
+                        "</a>" +
+                        "<a class='btn btn-danger btn-sm' href='#' onclick='deleteBlockUnit(\"" + item.id + "\")'>" +
+                        "<i class='ti-trash'></i> Delete" +
+                        "</a>" +
+                        "</td>" +
+                        "</tr>";
+                    newTable += newRow;
+                });
+
+                // Close table structure
+                newTable += "</tbody>" +
+                    "<tfoot class='tfoot-themed'>" +
+                    "<tr>" +
+                    "</tr>" +
+                    "</tfoot>" +
+                    "</table>";
+
+                // Replace the contents of an HTML element with the ID 'unit-table' with the new table
+                $('#unit-table').html(newTable);
+
+              }catch(err){
+                  alert("Ops sorry, there is an error");
+              }
+            }
+        });
+
+  }
 
   function add()
   {
@@ -319,6 +360,7 @@
 
   function getBlockUnit(id)
   {
+
     return $.ajax({
             headers: {'X-CSRF-TOKEN':  $('meta[name="csrf-token"]').attr('content')},
             url      : "{{ url('hostel/blockUnit/getBlockUnit') }}",
