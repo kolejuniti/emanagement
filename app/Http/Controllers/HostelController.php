@@ -141,24 +141,33 @@ class HostelController extends Controller
 
         $data['resident'] = DB::table('tblresident')->get();
 
-        $data['block_unit'] = DB::table('tblblock_unit')
-                              ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
-                              ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
-                              ->select('tblblock_unit.*', 'tblblock.name AS block', 'tblresident.name AS resident')
-                              ->get();
+        return view('hostel.block_library.block_unit.index', compact('data'));
 
-        foreach($data['block_unit'] as $key => $bu)
-        {
+    }
 
-            $data['residents'][$key] = DB::table('tblstudent_hostel')
-                                ->where('block_unit_id', $bu->id)
-                                ->where('status', 'IN')
-                                ->select(DB::raw('COUNT(id) AS total_student'))
-                                ->first();
+    
+    public function getBlockUnits(Request $request)
+    {
 
+        $datas = DB::table('tblblock_unit')
+        ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+        ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
+        ->where('tblblock_unit.block_id', $request->block)
+        ->select('tblblock_unit.*', 'tblblock.name AS block', 'tblresident.name AS resident')
+        ->get();
+
+        foreach ($datas as $key => $bu) {
+            // Fetch total student count for each block unit
+            $totalStudents = DB::table('tblstudent_hostel')
+                ->where('block_unit_id', $bu->id)
+                ->where('status', 'IN')
+                ->count();  // Count directly since we need only one value
+        
+            // Assign total student count to $datas
+            $datas[$key]->total_student = $totalStudents;
         }
 
-        return view('hostel.block_library.block_unit.index', compact('data'));
+        return response()->json(['data' => $datas]);
 
     }
 
@@ -242,6 +251,7 @@ class HostelController extends Controller
             $datas = DB::table('tblblock_unit')
             ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
             ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
+            ->where('tblblock_unit.block_id', $data->block)
             ->select('tblblock_unit.*', 'tblblock.name AS block', 'tblresident.name AS resident')
             ->get();
 
@@ -287,6 +297,7 @@ class HostelController extends Controller
         return response()->json(['message' => 'Success', 'data' => $datas]);
 
     }
+
 
     public function getBlockUnit(Request $request)
     {
