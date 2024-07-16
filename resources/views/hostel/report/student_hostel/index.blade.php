@@ -174,7 +174,7 @@
                                                             <td style="text-align: center; border: 1px solid black;">
                                                             {{ $sum3 }}
                                                             </td>
-                                                            <td></td>
+                                                            <td style="text-align: center; border: 1px solid black;"></td>
                                                         </tr>
                                                       </tfoot>
                                                     </table>
