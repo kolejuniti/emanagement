@@ -151,32 +151,32 @@
                                                               </td>
                                                           </tr>
                                                           @php
-                                                          $sum1 =+ $ut->capacity;
-                                                          $sum2 =+ $data['resident'][$key][$key2]->total_resident;
-                                                          $sum3 =+ $ut->capacity - $data['resident'][$key][$key2]->total_resident;
+                                                          $sum1 += $ut->capacity;
+                                                          $sum2 += $data['resident'][$key][$key2]->total_resident;
+                                                          $sum3 += $ut->capacity - $data['resident'][$key][$key2]->total_resident;
                                                           @endphp
                                                           @endforeach
-                                                          <tfoot>
-                                                              <tr>
-                                                                  <td style="text-align:center">
-                                                                  TOTAL AMOUNT :
-                                                                  </td>
-                                                                  <td>
-                                                                  {{ $sum1 }}
-                                                                  </td>
-                                                                  <td>
-                                                                  {{ $sum2 }} 
-                                                                  </td>
-                                                                  <td>
-                                                                  {{ $sum3 }}
-                                                                  </td>
-                                                                  <td></td>
-                                                              </tr>
-                                                          </tfoot>
                                                           <div class="col-md-6" hidden>
                                                               <input type="text" class="form-control" name="sum2" id="sum2">
                                                           </div> 
                                                       </tbody>
+                                                      <tfoot>
+                                                        <tr>
+                                                            <td style="text-align:center">
+                                                            TOTAL AMOUNT :
+                                                            </td>
+                                                            <td>
+                                                            {{ $sum1 }}
+                                                            </td>
+                                                            <td>
+                                                            {{ $sum2 }} 
+                                                            </td>
+                                                            <td>
+                                                            {{ $sum3 }}
+                                                            </td>
+                                                            <td></td>
+                                                        </tr>
+                                                      </tfoot>
                                                     </table>
                                                   </td>
                                               </tr>
