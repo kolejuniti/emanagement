@@ -128,9 +128,9 @@
                                                       </thead>
                                                       <tbody id="table">
                                                           @php
-                                                          $sum1 = 0;
-                                                          $sum2 = 0;
-                                                          $sum3 = 0;    
+                                                            $sum1 = 0;
+                                                            $sum2 = 0;
+                                                            $sum3 = 0;    
                                                           @endphp
                                                           @foreach($data['unit'][$key] as $key2 => $ut)
                                                           <tr>
@@ -162,16 +162,16 @@
                                                       </tbody>
                                                       <tfoot>
                                                         <tr>
-                                                            <td style="text-align:center">
+                                                            <td style="text-align: center; border: 1px solid black;">
                                                             TOTAL AMOUNT :
                                                             </td>
-                                                            <td>
+                                                            <td style="text-align: center; border: 1px solid black;">
                                                             {{ $sum1 }}
                                                             </td>
-                                                            <td>
+                                                            <td style="text-align: center; border: 1px solid black;">
                                                             {{ $sum2 }} 
                                                             </td>
-                                                            <td>
+                                                            <td style="text-align: center; border: 1px solid black;">
                                                             {{ $sum3 }}
                                                             </td>
                                                             <td></td>

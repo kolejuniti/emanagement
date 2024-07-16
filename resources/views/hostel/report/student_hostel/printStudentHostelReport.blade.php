@@ -151,6 +151,11 @@ tr:hover {
                                                     </tr>
                                                 </thead>
                                                 <tbody id="table">
+                                                    @php
+                                                        $sum1 = 0;
+                                                        $sum2 = 0;
+                                                        $sum3 = 0;    
+                                                    @endphp
                                                     @foreach($data['unit'][$key] as $key2 => $ut)
                                                     <tr>
                                                         <td>
@@ -169,27 +174,33 @@ tr:hover {
                                                           {{ $ut->resident }}
                                                         </td>
                                                     </tr>
+                                                    @php
+                                                        $sum1 += $ut->capacity;
+                                                        $sum2 += $data['resident'][$key][$key2]->total_resident;
+                                                        $sum3 += $ut->capacity - $data['resident'][$key][$key2]->total_resident;
+                                                    @endphp
                                                     @endforeach
-                                                    <tfoot>
-                                                        {{-- <tr>
-                                                            <td colspan="4" style="text-align:center">
-                                                            TOTAL AMOUNT :
-                                                            </td>
-                                                            <td>
-                                                            {{ number_format($data['sum1'], 2) }}
-                                                            </td>
-                                                            <td>
-                                                            {{ number_format($data['sum2'], 2) }} 
-                                                            </td>
-                                                            <td>
-                                                            {{ number_format($data['sum3'], 2) }}
-                                                            </td>
-                                                        </tr> --}}
-                                                    </tfoot>
                                                     <div class="col-md-6" hidden>
                                                         <input type="text" class="form-control" name="sum2" id="sum2">
                                                     </div> 
                                                 </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>
+                                                        TOTAL AMOUNT :
+                                                        </td>
+                                                        <td>
+                                                        {{ $sum1 }}
+                                                        </td>
+                                                        <td>
+                                                        {{ $sum2 }} 
+                                                        </td>
+                                                        <td>
+                                                        {{ $sum3 }}
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                  </tfoot>
                                               </table>
                                             </td>
                                         </tr>
