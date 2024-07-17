@@ -228,6 +228,162 @@ tr:hover {
                     </div>
                 </div>
             </div>
+
+            <div class="card mb-3" id="stud_info">
+                <div class="card-header">
+                <b>Student Hostel Report Summary</b>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 mt-3">
+                            <div class="form-group mt-3">
+                                <table class="w-100 table table-bordered display margin-top-10 w-p100">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="5">
+                                                RINGKASAN LAPORAN ASRAMA PELAJAR
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                              
+                                            </th>
+                                            <th>
+                                                LOKASI
+                                            </th>
+                                            <th>
+                                                KAPASITI
+                                            </th>
+                                            <th>
+                                                JUMLAH PENGHUNI
+                                            </th>
+                                            <th>
+                                                KEKOSONGAN
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table">
+                                        @php
+                                        $total1 = 0;
+                                        $total2 = 0;
+                                        $total3 = 0;
+                                        @endphp
+                                        @foreach($data['summary'] as $key => $sm)
+                                        <tr>
+                                            <td>
+                                              {{ $sm->resident }}
+                                            </td>
+                                            <td>
+                                              {{ $sm->location }}
+                                            </td>
+                                            <td>
+                                              {{ $data['capacity'][$key]->total }}
+                                            </td>
+                                            <td>
+                                              {{ $data['resident2'][$key]->total }}
+                                            </td>
+                                            <td>
+                                              {{ $data['vacancy'][$key] }}
+                                            </td>
+                                        </tr>
+                                        @php
+                                        $total1 += $data['capacity'][$key]->total;
+                                        $total2 += $data['resident2'][$key]->total;
+                                        $total3 += $data['vacancy'][$key];
+                                        @endphp
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                      <tr>
+                                          <td colspan="2">
+                                            <b>TOTAL AMOUNT :</b>
+                                          </td>
+                                          <td>
+                                            <b>{{ $total1 }}</b>
+                                          </td>
+                                          <td>
+                                            <b>{{ $total2 }}</b> 
+                                          </td>
+                                          <td>
+                                            <b>{{ $total3 }}</b>
+                                          </td>
+                                      </tr>
+                                  </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                          <div class="form-group mt-3">
+                              <table class="w-100 table table-bordered display margin-top-10 w-p100">
+                                  <thead>
+                                      <tr>
+                                          <th>
+                                            
+                                          </th>
+                                          <th>
+                                              KAPASITI
+                                          </th>
+                                          <th>
+                                              JUMLAH PENGHUNI
+                                          </th>
+                                          <th>
+                                              KEKOSONGAN
+                                          </th>
+                                      </tr>
+                                  </thead>
+                                  <tbody id="table">
+                                      @php
+                                      $total12 = 0;
+                                      $total22 = 0;
+                                      $total32 = 0;
+                                      @endphp
+                                      @foreach($data['summary2'] as $key => $sm)
+                                      <tr>
+                                          <td>
+                                            {{ $sm->location }}
+                                          </td>
+                                          <td>
+                                            {{ $data['capacity2'][$key]->total ?? 0 }}
+                                          </td>
+                                          <td>
+                                            {{ $data['resident3'][$key]->total ?? 0 }}
+                                          </td>
+                                          <td>
+                                            {{ $data['vacancy2'][$key] }}
+                                          </td>
+                                      </tr>
+                                      @php
+                                      $total12 += $data['capacity2'][$key]->total;
+                                      $total22 += $data['resident3'][$key]->total;
+                                      $total32 += $data['vacancy2'][$key];
+                                      @endphp
+                                      @endforeach
+                                  </tbody>
+                                  <tfoot>
+                                    <tr>
+                                        <td>
+                                          <b>TOTAL AMOUNT :</b>
+                                        </td>
+                                        <td>
+                                          <b>{{ $total12 }}</b>
+                                        </td>
+                                        <td>
+                                          <b>{{ $total22 }}</b> 
+                                        </td>
+                                        <td>
+                                          <b>{{ $total32 }}</b>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
         </div>
         <!-- END INVOICE -->
     </div>

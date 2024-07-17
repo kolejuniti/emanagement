@@ -272,16 +272,16 @@
                                           <tfoot>
                                             <tr>
                                                 <td colspan="2" style="text-align: center; border: 1px solid black;">
-                                                TOTAL AMOUNT :
+                                                  <b>TOTAL AMOUNT :</b>
                                                 </td>
                                                 <td style="text-align: center; border: 1px solid black;">
-                                                {{ $total1 }}
+                                                  <b>{{ $total1 }}</b>
                                                 </td>
                                                 <td style="text-align: center; border: 1px solid black;">
-                                                {{ $total2 }} 
+                                                  <b>{{ $total2 }}</b> 
                                                 </td>
                                                 <td style="text-align: center; border: 1px solid black;">
-                                                {{ $total3 }}
+                                                  <b>{{ $total3 }}</b>
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -289,6 +289,75 @@
                                   </div>
                               </div>
                           </div>
+
+                          <div class="row">
+                            <div class="col-md-12 mt-3">
+                                <div class="form-group mt-3">
+                                    <table class="w-100 table display margin-top-10 w-p100">
+                                        <thead style="background-color: lightblue">
+                                            <tr>
+                                                <th style="text-align: center; border: 1px solid black;">
+                                                  
+                                                </th>
+                                                <th style="text-align: center; border: 1px solid black;">
+                                                    KAPASITI
+                                                </th>
+                                                <th style="text-align: center; border: 1px solid black;">
+                                                    JUMLAH PENGHUNI
+                                                </th>
+                                                <th style="text-align: center; border: 1px solid black;">
+                                                    KEKOSONGAN
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table">
+                                            @php
+                                            $total12 = 0;
+                                            $total22 = 0;
+                                            $total32 = 0;
+                                            @endphp
+                                            @foreach($data['summary2'] as $key => $sm)
+                                            <tr>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                  {{ $sm->location }}
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                  {{ $data['capacity2'][$key]->total ?? 0 }}
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                  {{ $data['resident3'][$key]->total ?? 0 }}
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                  {{ $data['vacancy2'][$key] }}
+                                                </td>
+                                            </tr>
+                                            @php
+                                            $total12 += $data['capacity2'][$key]->total;
+                                            $total22 += $data['resident3'][$key]->total;
+                                            $total32 += $data['vacancy2'][$key];
+                                            @endphp
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                          <tr>
+                                              <td style="text-align: center; border: 1px solid black;">
+                                                <b>TOTAL AMOUNT :</b>
+                                              </td>
+                                              <td style="text-align: center; border: 1px solid black;">
+                                                <b>{{ $total12 }}</b>
+                                              </td>
+                                              <td style="text-align: center; border: 1px solid black;">
+                                                <b>{{ $total22 }}</b> 
+                                              </td>
+                                              <td style="text-align: center; border: 1px solid black;">
+                                                <b>{{ $total32 }}</b>
+                                              </td>
+                                          </tr>
+                                      </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                       </div>
                     </div>
                   </div>
