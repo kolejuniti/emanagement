@@ -832,7 +832,38 @@ class HostelController extends Controller
                            ->select('tblresident.name AS resident', 'tblblock.location')
                            ->get();
 
-        dd($data['summary']);
+        foreach($data['summary'] as $key => $sm)
+        {
+
+            $data['capacity'][$key] = DB::table('tblblock_unit')
+                                    ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+                                    ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
+                                    ->where([
+                                        ['tblresident.name', $sm->resident],
+                                        ['tblblock.location', $sm->location]
+                                    ])
+                                    ->select(DB::raw('SUM(tblblock_unit.capacity) AS total'))
+                                    ->first();
+
+            $data['resident2'][$key] = DB::table('tblblock_unit')
+                                    ->join('tblstudent_hostel', 'tblblock_unit.id', 'tblstudent_hostel.block_unit_id')
+                                    ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+                                    ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
+                                    ->where([
+                                        ['tblresident.name', $sm->resident],
+                                        ['tblblock.location', $sm->location],
+                                        ['tblstudent_hostel.status', 'IN']
+                                    ])
+                                    ->select(DB::raw('COUNT(tblstudent_hostel.student_ic) AS total'))
+                                    ->first();
+
+            $data['vacancy'][$key] = $data['capacity'][$key]->total - $data['resident2'][$key]->total;
+
+            
+
+        }
+
+        //dd($data['vacancy']);
 
 
         //dd($data['resident']);
