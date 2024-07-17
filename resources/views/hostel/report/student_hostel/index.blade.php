@@ -204,6 +204,93 @@
                           </div>
                       </div>
                     </div>
+
+                    <div class="card mb-3" id="stud_info">
+                      <div class="card-header">
+                      <b>Student Hostel Report Summary</b>
+                      </div>
+                      <div class="card-body">
+                          <div class="row">
+                              <div class="col-md-12 mt-3">
+                                  <div class="form-group mt-3">
+                                      <table class="w-100 table display margin-top-10 w-p100">
+                                          <thead style="background-color: lightblue">
+                                              <tr>
+                                                  <th style="text-align: center; border: 1px solid black;" colspan="5">
+                                                      RINGKASAN LAPORAN ASRAMA PELAJAR
+                                                  </th>
+                                              </tr>
+                                              <tr>
+                                                  <th style="text-align: center; border: 1px solid black;">
+                                                    
+                                                  </th>
+                                                  <th style="text-align: center; border: 1px solid black;">
+                                                      LOKASI
+                                                  </th>
+                                                  <th style="text-align: center; border: 1px solid black;">
+                                                      KAPASITI
+                                                  </th>
+                                                  <th style="text-align: center; border: 1px solid black;">
+                                                      JUMLAH PENGHUNI
+                                                  </th>
+                                                  <th style="text-align: center; border: 1px solid black;">
+                                                      KEKOSONGAN
+                                                  </th>
+                                              </tr>
+                                          </thead>
+                                          <tbody id="table">
+                                              @php
+                                              $total1 = 0;
+                                              $total2 = 0;
+                                              $total3 = 0;
+                                              @endphp
+                                              @foreach($data['summary'] as $key => $sm)
+                                              <tr>
+                                                  <td style="text-align: center; border: 1px solid black;">
+                                                    {{ $sm->resident }}
+                                                  </td>
+                                                  <td style="text-align: center; border: 1px solid black;">
+                                                    {{ $sm->location }}
+                                                  </td>
+                                                  <td style="text-align: center; border: 1px solid black;">
+                                                    {{ $data['capacity'][$key]->total }}
+                                                  </td>
+                                                  <td style="text-align: center; border: 1px solid black;">
+                                                    {{ $data['resident2'][$key]->total }}
+                                                  </td>
+                                                  <td style="text-align: center; border: 1px solid black;">
+                                                    {{ $data['vacancy'][$key] }}
+                                                  </td>
+                                              </tr>
+                                              @php
+                                              $total1 += $data['capacity'][$key]->total;
+                                              $total2 += $data['resident2'][$key]->total;
+                                              $total3 += $data['vacancy'][$key];
+                                              @endphp
+                                              @endforeach
+                                          </tbody>
+                                          <tfoot>
+                                            <tr>
+                                                <td colspan="2" style="text-align: center; border: 1px solid black;">
+                                                TOTAL AMOUNT :
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                {{ $total1 }}
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                {{ $total2 }} 
+                                                </td>
+                                                <td style="text-align: center; border: 1px solid black;">
+                                                {{ $total3 }}
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                      </table>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="row" id="confirm-card" hidden>
                     <div class="col-md-12 mt-3 text-center">
