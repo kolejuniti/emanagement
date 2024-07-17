@@ -863,10 +863,41 @@ class HostelController extends Controller
 
         }
 
-        //dd($data['vacancy']);
+        
+        $data['summary2'] = DB::table('tblblock')
+                            ->groupBy('tblblock.location')
+                            ->select('tblblock.location AS location')
+                            ->get();
+
+        foreach($data['summary2'] as $key => $sm)
+        {
+
+            $baseQuery = function() use ($sm){
+
+                return DB::table('tblblock_unit')
+                    ->join('tblstudent_hostel', 'tblblock_unit.id', 'tblstudent_hostel.block_unit_id')
+                    ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+                    ->where([
+                        ['tblblock.location', $sm->location]
+                    ]);
+
+            };
+
+            $data['capacity2'][$key] = ($baseQuery)()
+                                ->select(DB::raw('SUM(tblblock_unit.capacity) AS total'))
+                                ->first();
+
+            $data['resident3'][$key] = ($baseQuery)()
+                                ->where('tblstudent_hostel.status', 'IN')
+                                ->select(DB::raw('COUNT(tblstudent_hostel.student_ic) AS total'))
+                                ->first();
+
+            $data['vacancy2'][$key] = $data['capacity2'][$key]->total - $data['resident3'][$key]->total;
+
+        }
 
 
-        //dd($data['resident']);
+        //dd($data['resident3']);
 
         if(isset(request()->print))
         {
