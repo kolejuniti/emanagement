@@ -827,6 +827,8 @@ class HostelController extends Controller
                            ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
                            ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
                            ->groupBy('tblresident.name', 'tblblock.location')
+                           ->where('tblresident.name', 'LIKE', '%LELAKI%')
+                           ->orWhere('tblresident.name', 'LIKE', '%PEREMPUAN%')
                            ->select('tblresident.name AS resident', 'tblblock.location')
                            ->get();
 
