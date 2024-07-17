@@ -820,6 +820,19 @@ class HostelController extends Controller
 
         }
 
+        
+        //summary
+
+        $data['summary'] = DB::table('tblblock_unit')
+                           ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+                           ->join('tblresident', 'tblblock_unit.resident_id', 'tblresident.id')
+                           ->groupBy('tblresident.name', 'tblblock.location')
+                           ->select('tblresident.name AS resident', 'tblblock.location')
+                           ->get();
+
+        dd($data['summary']);
+
+
         //dd($data['resident']);
 
         if(isset(request()->print))
