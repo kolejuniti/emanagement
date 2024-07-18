@@ -1038,6 +1038,7 @@ class HostelController extends Controller
         $hostelData = DB::table('tblstudent_hostel')
         ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', '=', 'tblblock_unit.id')
         ->where('tblstudent_hostel.block_unit_id', $request->id)
+        ->where('tblstudent_hostel.status', 'IN')
         ->whereIn('tblstudent_hostel.student_ic', $studentIcs)
         ->select('tblstudent_hostel.*', 'tblblock_unit.no_unit')
         ->get();
