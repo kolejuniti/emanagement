@@ -944,6 +944,7 @@ class HostelController extends Controller
 
             $data['resident'][$key] = DB::table('tblstudent_hostel')
                                 ->where('block_unit_id', $ut->id)
+                                ->where('status', 'IN')
                                 ->select(DB::raw('COUNT(student_ic) AS total_resident'))
                                 ->first();
 
@@ -959,7 +960,7 @@ class HostelController extends Controller
                                 Blok
                             </th>
                             <th>
-                                Np. Unit
+                                No. Unit
                             </th>
                             <th>
                                 Jumlah Penghuni
