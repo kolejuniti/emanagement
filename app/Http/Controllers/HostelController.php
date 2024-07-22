@@ -477,6 +477,19 @@ class HostelController extends Controller
 
     }
 
+    public function getRemarkData($ic)
+    {
+        // Fetch the data based on the ic value
+        $data = DB::connection('mysql2')->table('students')
+                ->where('ic',  $ic)
+                ->get();
+
+
+        // Return the data as a JSON response
+        return response()->json($data);
+    }
+
+
     public function getStudentInfo(Request $request)
     {
 
@@ -813,6 +826,7 @@ class HostelController extends Controller
 
                 $data['resident'][$key][$key2] = DB::table('tblstudent_hostel')
                                     ->where('block_unit_id', $ut->id)
+                                    ->where('status', 'IN')
                                     ->select(DB::raw('COUNT(student_ic) AS total_resident'))
                                     ->first();
 
