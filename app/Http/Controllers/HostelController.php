@@ -900,7 +900,6 @@ class HostelController extends Controller
             };
 
             $data['capacity2'][$key] = DB::table('tblblock_unit')
-                    ->join('tblstudent_hostel', 'tblblock_unit.id', 'tblstudent_hostel.block_unit_id')
                     ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
                     ->where([
                         ['tblblock.location', $sm->location]
