@@ -899,7 +899,6 @@ class HostelController extends Controller
 
             $data['capacity2'][$key] = ($baseQuery)()
                                 ->select(DB::raw('SUM(tblblock_unit.capacity) AS total'))
-                                ->groupBy('tblblock_unit.id')
                                 ->first();
 
             $data['resident3'][$key] = ($baseQuery)()
