@@ -883,6 +883,8 @@ class HostelController extends Controller
                             ->select('tblblock.location AS location')
                             ->get();
 
+                        
+
         foreach($data['summary2'] as $key => $sm)
         {
 
@@ -897,11 +899,21 @@ class HostelController extends Controller
 
             };
 
-            $data['capacity2'][$key] = ($baseQuery)()
+            $data['capacity2'][$key] = DB::table('tblblock_unit')
+                    ->join('tblstudent_hostel', 'tblblock_unit.id', 'tblstudent_hostel.block_unit_id')
+                    ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+                    ->where([
+                        ['tblblock.location', $sm->location]
+                    ])
                                 ->select(DB::raw('SUM(tblblock_unit.capacity) AS total'))
                                 ->first();
 
-            $data['resident3'][$key] = ($baseQuery)()
+            $data['resident3'][$key] = DB::table('tblblock_unit')
+                    ->join('tblstudent_hostel', 'tblblock_unit.id', 'tblstudent_hostel.block_unit_id')
+                    ->join('tblblock', 'tblblock_unit.block_id', 'tblblock.id')
+                    ->where([
+                        ['tblblock.location', $sm->location]
+                    ])
                                 ->where('tblstudent_hostel.status', 'IN')
                                 ->select(DB::raw('COUNT(tblstudent_hostel.student_ic) AS total'))
                                 ->first();
