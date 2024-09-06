@@ -45,7 +45,7 @@
                 <div class="card-body" style="width: 100%; overflow-x: auto;">
                     <table id="table_dismissed" class="w-100 table display margin-top-10 w-p100 table-layout: fixed;" style="width: 100%;">
                       <thead style="background-color: darkcyan">
-                        <tr>
+                        {{-- <tr>
                           <th style="text-align: center; border: 1px solid black;" colspan="2"> </th>
                           <th style="text-align: center; border: 1px solid black;" colspan="2">40</th>
                           <th style="text-align: center; border: 1px solid black;" colspan="2">40</th>
@@ -54,7 +54,7 @@
                           <th style="text-align: center; border: 1px solid black;" colspan="2">2</th>
                           <th style="text-align: center; border: 1px solid black;" colspan="2">0</th>
                           <th style="text-align: center; border: 1px solid black;" colspan="9"> </th>
-                        </tr>
+                        </tr> --}}
                         <tr>
                           <th style="text-align: center; width: 1%; border: 1px solid black;" rowspan="2">
                           Faculty
@@ -86,13 +86,13 @@
                           <th style="text-align: center; width: 5%; border: 1px solid black;" colspan="2">
                           Sem 8
                           </th>
-                          <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
+                          {{-- <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
                           Industry Training
-                          </th>
+                          </th> --}}
                           <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
                           Active
                           </th>
-                          <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
+                          {{-- <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
                           Active on Leave
                           </th>
                           <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
@@ -100,7 +100,7 @@
                           </th>
                           <th style="width: 10%; text-align: center; border: 1px solid black;" rowspan="2">
                           Dismissed
-                          </th>
+                          </th> --}}
                         </tr>
                         <tr>
                           <th style="border: 1px solid black;">L</th>
@@ -296,17 +296,17 @@
                                 $totalSum_fs8 += $sum_fs8;
                             @endphp
                           </td>
-                          <td style="text-align: center; border: 1px solid black;">
+                          {{-- <td style="text-align: center; border: 1px solid black;">
                             @foreach ((array) $data['industry'][$key] as $industry)
                             {{ $industry }}
                             @endforeach
-                          </td>
+                          </td> --}}
                           <td style="text-align: center; border: 1px solid black;">
                             @foreach ((array) $data['active'][$key] as $active)
                             {{ $active }}
                             @endforeach
                           </td>
-                          <td style="text-align: center; border: 1px solid black;">
+                          {{-- <td style="text-align: center; border: 1px solid black;">
                             @foreach ((array) $data['active_leave'][$key] as $aol)
                             {{ $aol }}
                             @endforeach
@@ -320,7 +320,7 @@
                             @foreach ((array) $data['dismissed'][$key] as $dismissed)
                             {{ $dismissed }}
                             @endforeach
-                          </td>
+                          </td> --}}
                         </tr>
                         @endforeach
                         
@@ -381,7 +381,7 @@
                           <td style="border: 1px solid black;">
                             {{ $totalSum_fs8 }}
                           </td>
-                          <td style="text-align: center; border: 1px solid black;">
+                          {{-- <td style="text-align: center; border: 1px solid black;">
                             @php
                               $industry = count(DB::connection('mysql2')->table('students')
                               ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
@@ -392,7 +392,7 @@
                                     ])->get());
                             @endphp
                             {{ $industry }}
-                          </td>
+                          </td> --}}
                           <td style="text-align: center; border: 1px solid black;">
                             @php
                               $active = count(DB::connection('mysql2')->table('students')
@@ -405,7 +405,7 @@
                             @endphp
                             {{ $active }}
                           </td>
-                          <td style="text-align: center; border: 1px solid black;">
+                          {{-- <td style="text-align: center; border: 1px solid black;">
                             @php
                               $aol = count(DB::connection('mysql2')->table('students')
                               ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
@@ -438,7 +438,7 @@
                                     ])->get());
                             @endphp
                             {{ $dismissed }}
-                          </td>
+                          </td> --}}
                         </tr>
                         <tr>
                           <td style="border: 1px solid black;">
@@ -500,7 +500,7 @@
                               </td>
                             @endif
                           @endforeach
-                          <td style="text-align: center; border: 1px solid black;">
+                          {{-- <td style="text-align: center; border: 1px solid black;">
                             @php
                               $industry = count(DB::connection('mysql2')->table('students')
                               ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
@@ -511,19 +511,21 @@
                                     ])->get());
                             @endphp
                             {{ $industry }}
-                          </td>
+                          </td> --}}
                           @php
 
-                          $total_all = $active + $aol + $postpone + $holding;
+                          // $total_all = $active + $aol + $postpone + $holding;
+
+                          $total_all = $active;
 
                           @endphp
                           <td style="text-align: center; border: 1px solid black;" colspan="3">
                             {{ $total_all }}
                           </td>
-                          <td style="text-align: center; border: 1px solid black;">
-                          </td>
+                          {{-- <td style="text-align: center; border: 1px solid black;">
+                          </td> --}}
                         </tr>
-                        <tr>
+                        {{-- <tr>
                           <td style="border: 1px solid black;">
                             
                           </td>
@@ -550,7 +552,9 @@
                           </td>
                           @php
 
-                          $total_all = $industry + $active + $aol + $postpone + $holding;
+                          // $total_all = $industry + $active + $aol + $postpone + $holding;
+
+                          $total_all = $active;
 
                           @endphp
                           <td style="text-align: center; border: 1px solid black;" colspan="4">
@@ -558,7 +562,7 @@
                           </td>
                           <td style="text-align: center; border: 1px solid black;">
                           </td>
-                        </tr>
+                        </tr> --}}
                       </tfoot>
                     </table>
                 </div>
