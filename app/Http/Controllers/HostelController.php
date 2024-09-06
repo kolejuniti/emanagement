@@ -1128,4 +1128,331 @@ class HostelController extends Controller
 
     }
 
+    public function studentReport()
+    {
+        $data['ms1'] = [];
+
+        $data['sum'] = [];
+
+        $data['program'] = DB::connection('mysql2')->table('tblprogramme')
+                           ->join('tblfaculty', 'tblprogramme.facultyid', 'tblfaculty.id')
+                           ->select('tblprogramme.*', 'tblfaculty.facultyname', 'tblfaculty.facultycode')->get();
+
+        $data['faculty'] = DB::connection('mysql2')->table('tblfaculty')->get();
+
+        // $data['sessions'] = DB::connection('mysql2')->table('sessions')
+        //                     ->join('students', 'sessions.SessionID', 'students.intake')
+        //                     ->where('students.semester', 1)
+        //                     ->where('students.status', 2)
+        //                     ->groupBy('sessions.SessionID')
+        //                     ->select('sessions.*')
+        //                     ->get();
+
+        //dd($data['sessions']);
+
+        foreach($data['faculty'] as $fcl)
+        {
+
+            $data['count'][] = count(DB::connection('mysql2')->table('tblprogramme')->where('facultyid', $fcl->id)->get());
+
+        }
+
+        //dd($data['count']);
+
+        foreach($data['program'] as $key => $prg)
+        {
+
+            $data['sum'][$key] = count(DB::connection('mysql2')->table('students')
+                                       ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                       ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+                                       ->join('tblfaculty', 'tblprogramme.facultyid', 'tblfaculty.id')
+                                       ->where('tblfaculty.id', $prg->facultyid)
+                                       ->get());
+
+
+            $data['holding_m1'][$key] = count(DB::connection('mysql2')->table('students')
+                                       ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                       ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                       ->where([
+                                       ['students.program', $prg->id],
+                                       ['students.status', 2],
+                                       ['students.student_status', 1],
+                                       ['tblstudent_personal.sex_id', 1]
+                                       ])->get());
+   
+            $data['holding_f1'][$key] = count(DB::connection('mysql2')->table('students')
+                                       ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                       ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                       ->where([
+                                       ['students.program', $prg->id],
+                                       ['students.status', 2],
+                                       ['students.student_status', 1],
+                                       ['tblstudent_personal.sex_id', 2]
+                                       ])->get());
+
+            $data['ms1'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                 ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                 ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 1],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+            
+            $data['fs1'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                 ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                 ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 1],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+            
+            $data['ms2'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 2],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs2'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 2],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['ms3'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 3],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs3'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 3],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+                                    
+            $data['ms4'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 4],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs4'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 4],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['ms5'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                     ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 5],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs5'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                     ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 5],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['ms6'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 6],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs6'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 6],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['ms7'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 7],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs7'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 7],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['ms8'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 8],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 1],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['fs8'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.semester', 8],
+                                    ['students.status', 2],
+                                    ['students.student_status', 2],
+                                    ['tblstudent_personal.sex_id', 2],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['industry'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.status', 2],
+                                    ['students.student_status', 4],
+                                    ['students.campus_id', 1]
+                                    ])->get());
+
+            $data['active'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.status', 2],
+                                    ['students.campus_id', 1],
+                                    ['students.student_status', 2]
+                                    ])->get());
+
+            $data['active_leave'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.status', 2],
+                                    ['students.campus_id', 0]
+                                    ])->whereIn('students.student_status', [2,4])->get());
+                                    
+            $data['postpone'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.status', 6]
+                                    ])->get());
+
+            $data['dismissed'][$key] = count(DB::connection('mysql2')->table('students')
+            ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    ->where([
+                                    ['students.program', $prg->id],
+                                    ['students.status', 4]
+                                    ])->get());
+
+                                 
+
+        }
+
+        // foreach($data['sessions'] as $key => $ses)
+        // {
+
+        //     $data['holding'][$key] = count(DB::connection('mysql2')->table('students')
+        //     ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+        //                                    ->where([
+        //                                     ['students.semester', 1],
+        //                                     ['students.status', 2],
+        //                                     ['students.student_status', 1],
+        //                                     ['students.campus_id', 1],
+        //                                     ['students.intake', $ses->SessionID]
+        //                                    ])->get());
+
+        //     $data['kuliah'][$key] = count(DB::connection('mysql2')->table('students')
+        //     ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+        //                                    ->where([
+        //                                     ['students.semester', 1],
+        //                                     ['students.status', 2],
+        //                                     ['students.student_status', 2],
+        //                                     ['students.campus_id', 1],
+        //                                     ['students.intake', $ses->SessionID]
+        //                                    ])->get());
+
+        // }
+
+        return view('hostel.report.student_report.studentReport', compact('data'));
+
+    }
+
 }

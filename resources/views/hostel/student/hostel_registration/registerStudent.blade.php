@@ -7,6 +7,7 @@
 }
 
 </style>
+
 <!-- Content Header (Page header) -->
 <div class="content-wrapper" style="min-height: 695.8px;">
   <div class="container-full">
@@ -149,6 +150,11 @@
                                     {{ $std->status }}
                                 </td>
                                 <td class="project-actions text-right" style="text-align: center;">
+                                  <a class="btn btn-primary btn-sm remark-button" href="#" data-ic="{{ $std->student_ic }}">
+                                      {{-- <i class="ti-trash">
+                                      </i> --}}
+                                      Remark
+                                  </a>
                                   <a class="btn btn-danger btn-sm" href="#" onclick="deleteStudent('{{ $std->id }}')">
                                       <i class="ti-trash">
                                       </i>
@@ -160,6 +166,25 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div id="uploadModal" class="modal" class="modal fade" role="dialog">
+                        <div class="modal-dialog modal-lg">
+                            <!-- modal content-->
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                  <div class="">
+                                      <button class="close waves-effect waves-light btn btn-danger btn-sm pull-right" data-dismiss="modal">
+                                          &times;
+                                      </button>
+                                  </div>
+                              </div>
+                              <div class="modal-body" id="getModal">
+                                
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
               </div>
             </div>
@@ -175,6 +200,40 @@
 
 <script src="{{ asset('assets/assets/vendor_components/ckeditor/ckeditor.js') }}"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
+
+<!-- Ensure React and ReactDOM are available globally -->
+<script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<!-- Include the compiled JavaScript file -->
+<script src="{{ mix('js/app.js') }}"></script>
+<script type="text/javascript">
+     document.addEventListener('DOMContentLoaded', function() {
+    const remarkButtons = document.querySelectorAll('.remark-button');
+
+    remarkButtons.forEach(button => {
+      button.addEventListener('click', function(event) {
+        event.preventDefault();
+        const ic = this.getAttribute('data-ic');
+
+        fetchRemarkData(ic);
+      });
+    });
+  });
+
+  function fetchRemarkData(ic) {
+    fetch(`/api/getRemarkData/${ic}`)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Checking if renderNodeComponent is defined:', typeof renderNodeComponent);
+        if (typeof renderNodeComponent === 'function') {
+          renderNodeComponent(data);
+        } else {
+          console.error('renderNodeComponent is not defined');
+        }
+      })
+      .catch(error => console.error('Error fetching remark data:', error));
+  }
+</script>
 <script type="text/javascript">
 
 $('#search').keyup(function(event){

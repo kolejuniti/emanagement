@@ -255,6 +255,7 @@
 					<ul class="treeview-menu treeview-menu-visible" id="treeview-menu-visible">
 						<li><a href="{{ route('hostel.report.studentHostelReport') }}" class="{{ (route('hostel.report.studentHostelReport') == Request::url()) ? 'active' : ''}}">Student Hostel Report</a></li>
 						<li><a href="{{ route('hostel.report.unitStatus') }}" class="{{ (route('hostel.report.unitStatus') == Request::url()) ? 'active' : ''}}">Room / Unit Status</a></li>
+						<li><a href="{{ route('hostel.report.studentReport') }}" class="{{ (route('hostel.report.studentReport') == Request::url()) ? 'active' : ''}}">Student Report</a></li>
 					</ul>
 				</li>
 				{{-- <li class="treeview">
