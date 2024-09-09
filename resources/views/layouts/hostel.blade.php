@@ -242,6 +242,8 @@
 						</span>
 					</a>
 					<ul class="treeview-menu treeview-menu-visible" id="treeview-menu-visible">
+						<li><a href="{{ route('hostel.student.list') }}" class="{{ (route('hostel.student.list') == Request::url()) ? 'active' : ''}}">Student List</a></li>
+						<li><a href="{{ route('hostel.student.view') }}" class="{{ (route('hostel.student.view') == Request::url()) ? 'active' : ''}}">Student Info</a></li>
 						<li><a href="{{ route('hostel.register') }}" class="{{ (route('hostel.register') == Request::url()) ? 'active' : ''}}">Hostel Registration</a></li>
 						<li><a href="{{ route('hostel.student.checkout') }}" class="{{ (route('hostel.student.checkout') == Request::url()) ? 'active' : ''}}">Hostel Checkout</a></li>
 					</ul>

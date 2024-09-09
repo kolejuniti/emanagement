@@ -658,6 +658,452 @@ class HostelController extends Controller
 
     }
 
+    public function studentList()
+    {
+        $year = DB::connection('mysql2')->table('tblyear')->get();
+        
+        $program = DB::connection('mysql2')->table('tblprogramme')->get();
+
+        $session = DB::connection('mysql2')->table('sessions')->get();
+
+        $semester = DB::connection('mysql2')->table('semester')->get();
+
+        $status = DB::connection('mysql2')->table('tblstudent_status')->get();
+
+        return view('hostel.student.list.index', compact('program', 'session', 'semester', 'year', 'status'));
+    }
+
+    public function getStudentListIndex(Request $request)
+    {
+        $student = DB::connection('mysql2')->table('students')
+            ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+            ->join('sessions AS a', 'students.intake', 'a.SessionID')
+            ->join('sessions AS b', 'students.session', 'b.SessionID')
+            ->join('tblstudent_status', 'students.status', 'tblstudent_status.id')
+            ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+            ->leftJoin('tblqualification_std', 'tblstudent_personal.qualification', 'tblqualification_std.id')
+            ->join('tblsex', 'tblstudent_personal.sex_id', 'tblsex.id')
+            ->select('students.*', 'tblprogramme.progcode', 'a.SessionName AS intake', 
+                     'b.SessionName AS session', 'tblstudent_status.name AS status',
+                     'tblstudent_personal.no_tel', 'tblsex.code AS gender', 'tblqualification_std.name AS qualification');
+
+        if(!empty($request->program) && $request->program != '-')
+        {
+            $student->where('students.program', $request->program);
+        }
+        
+        if(!empty($request->session) && $request->session != '-')
+        {
+            $student->where('students.session', $request->session);
+        }
+        
+        if(!empty($request->year) && $request->year != '-')
+        {
+            $student->where('b.Year', $request->year);
+        }
+        
+        if(!empty($request->semester) && $request->semester != '-')
+        {
+            $student->where('students.semester', $request->semester);
+        }
+        
+        if(!empty($request->status) && $request->status != '-')
+        {
+            $student->where('students.status', $request->status);
+        }
+
+        $students = $student->get();
+
+        foreach($students as $key => $std)
+        {
+
+            $sponsor_id[$key] = DB::connection('mysql2')->table('tblpayment')
+                                ->where([
+                                    ['student_ic', $std->ic],
+                                    ['sponsor_id', '!=', null]
+                                    ])
+                                ->latest('id')->first();
+
+            if($sponsor_id[$key] != null)
+            {
+
+                $sponsor[$key] = DB::connection('mysql2')->table('tblpayment')
+                                ->join('tblsponsor_library', 'tblpayment.payment_sponsor_id', 'tblsponsor_library.id')
+                                ->where('tblpayment.id', $sponsor_id[$key]->sponsor_id)->pluck('tblsponsor_library.code')->first();
+
+            }else{
+
+                $sponsor[$key] = 'SENDIRI';
+
+            }
+
+            if($std->student_status == 1)
+            {
+
+                $student_status[$key] = 'Holding';
+
+            }elseif($std->student_status == 2)
+            {
+
+                $student_status[$key] = 'Kuliah';
+
+            }elseif($std->student_status == 4)
+            {
+
+                $student_status[$key] = 'Latihan Industri';
+
+            }
+
+        }
+
+        $content = "";
+        $content .= '<thead>
+                        <tr>
+                            <th style="width: 1%">
+                                No.
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Gender
+                            </th>
+                            <th>
+                                No. IC
+                            </th>
+                            <th>
+                                No. Matric
+                            </th>
+                            <th>
+                                Program
+                            </th>
+                            <th>
+                                Intake
+                            </th>
+                            <th>
+                                Current Session
+                            </th>
+                            <th>
+                                Semester
+                            </th>
+                            <th>
+                                Sponsorship
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                No. Phone
+                            </th>
+                            <th>
+                                Campus
+                            </th>
+                            <th>
+                                Qualification
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table">';
+                    
+        foreach($students as $key => $student){
+            //$registered = ($student->status == 'ACTIVE') ? 'checked' : '';
+            $content .= '
+            <tr>
+                <td style="width: 1%">
+                '. $key+1 .'
+                </td>
+                <td>
+                '. $student->name .'
+                </td>
+                <td>
+                '. $student->gender .'
+                </td>
+                <td>
+                '. $student->ic .'
+                </td>
+                <td>
+                '. $student->no_matric .'
+                </td>
+                <td>
+                '. $student->progcode .'
+                </td>
+                <td>
+                '. $student->intake .'
+                </td>
+                <td>
+                '. $student->session .'
+                </td>
+                <td>
+                '. $student->semester .'
+                </td>
+                <td>
+                '. $sponsor[$key] .'
+                </td>
+                <td>
+                '. $student->status .'
+                </td>
+                <td>
+                '. $student->no_tel .'
+                </td>
+                <td>
+                '. $student_status[$key] .'
+                </td>
+                <td>
+                '. $student->qualification .'
+                </td>';
+                
+
+                // if (isset($request->edit)) {
+                //     $content .= '<td class="project-actions text-right" >
+                //                 <a class="btn btn-info btn-sm btn-sm mr-2 mb-2" href="/pendaftar/view/'. $student->ic .'">
+                //                     <i class="ti-pencil-alt">
+                //                     </i>
+                //                     View
+                //                 </a>
+                //                 <a class="btn btn-info btn-sm btn-sm mr-2 mb-2" href="/pendaftar/edit/'. $student->ic .'">
+                //                     <i class="ti-pencil-alt">
+                //                     </i>
+                //                     Edit
+                //                 </a>
+                //                 <a class="btn btn-primary btn-sm btn-sm mr-2 mb-2" href="/pendaftar/spm/'. $student->ic .'">
+                //                     <i class="ti-ruler-pencil">
+                //                     </i>
+                //                     SPM/SVM/SKM
+                //                 </a>
+                //                 <a class="btn btn-secondary btn-sm btn-sm mr-2 mb-2" href="#" onclick="getProgram(\''. $student->ic .'\')">
+                //                     <i class="ti-eye">
+                //                     </i>
+                //                     Program History
+                //                 </a>
+                //                 <a class="btn btn-secondary btn-sm btn-sm mr-2 mb-2" target="_blank" href="/AR/student/getSlipExam?student='. $student->ic .'">
+                //                     <i class="fa fa-info">
+                //                     </i>
+                //                     Slip Exam
+                //                 </a>
+                //                 <!-- <a class="btn btn-danger btn-sm" href="#" onclick="deleteMaterial('. $student->ic .')">
+                //                     <i class="ti-trash">
+                //                     </i>
+                //                     Delete
+                //                 </a> -->
+                //                 </td>
+                            
+                //             ';
+                // }else{
+                //     $content .= '<td class="project-actions text-right" >
+                //     <a class="btn btn-secondary btn-sm btn-sm mr-2" href="#" onclick="getProgram(\''. $student->ic .'\')">
+                //         <i class="ti-eye">
+                //         </i>
+                //         Program History
+                //     </a>
+                //     </td>
+                
+                // ';
+
+                // }
+            }
+            $content .= '</tr></tbody>';
+
+            return $content;
+
+    }
+
+    public function studentView()
+    {
+
+        return view('hostel.student.view.index');
+
+    }
+
+    public function getStudentListIndex2(Request $request)
+    {
+        $students = DB::connection('mysql2')->table('students')
+            ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+            ->join('sessions AS a', 'students.intake', 'a.SessionID')
+            ->join('sessions AS b', 'students.session', 'b.SessionID')
+            ->join('tblstudent_status', 'students.status', 'tblstudent_status.id')
+            ->select('students.*', 'tblprogramme.progname', 'a.SessionName AS intake', 
+                     'b.SessionName AS session', 'tblstudent_status.name AS status')
+            ->where('students.name', 'LIKE', "%".$request->search."%")
+            ->orwhere('students.ic', 'LIKE', "%".$request->search."%")
+            ->orwhere('students.no_matric', 'LIKE', "%".$request->search."%")->get();
+
+        foreach($students as $key => $std)
+        {
+
+            $sponsor_id[$key] = DB::connection('mysql2')->table('tblpayment')
+                                ->where([
+                                    ['student_ic', $std->ic],
+                                    ['sponsor_id', '!=', null]
+                                    ])
+                                ->latest('id')->first();
+
+            if($sponsor_id[$key] != null)
+            {
+
+                $sponsor[$key] = DB::connection('mysql2')->table('tblpayment')
+                                ->join('tblsponsor_library', 'tblpayment.payment_sponsor_id', 'tblsponsor_library.id')
+                                ->where('tblpayment.id', $sponsor_id[$key]->sponsor_id)->pluck('tblsponsor_library.name')->first();
+
+            }else{
+
+                $sponsor[$key] = 'SENDIRI';
+
+            }
+
+            if($std->student_status == 1)
+            {
+
+                $student_status[$key] = 'Holding';
+
+            }elseif($std->student_status == 2)
+            {
+
+                $student_status[$key] = 'Kuliah';
+
+            }elseif($std->student_status == 4)
+            {
+
+                $student_status[$key] = 'Latihan Industri';
+
+            }
+
+        }
+
+        $content = "";
+        $content .= '<thead>
+                        <tr>
+                            <th style="width: 1%">
+                                No.
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                No. IC
+                            </th>
+                            <th>
+                                No. Matric
+                            </th>
+                            <th>
+                                Program
+                            </th>
+                            <th>
+                                Intake
+                            </th>
+                            <th>
+                                Current Session
+                            </th>
+                            <th>
+                                Semester
+                            </th>
+                            <th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table">';
+                    
+        foreach($students as $key => $student){
+            //$registered = ($student->status == 'ACTIVE') ? 'checked' : '';
+            $content .= '
+            <tr>
+                <td style="width: 1%">
+                '. $key+1 .'
+                </td>
+                <td>
+                '. $student->name .'
+                </td>
+                <td>
+                '. $student->ic .'
+                </td>
+                <td>
+                '. $student->no_matric .'
+                </td>
+                <td>
+                '. $student->progname .'
+                </td>
+                <td>
+                '. $student->intake .'
+                </td>
+                <td>
+                '. $student->session .'
+                </td>
+                <td>
+                '. $student->semester .'
+                </td>';
+                
+
+            
+                $content .= '<td class="project-actions text-right" >
+                            <a class="btn btn-success btn-sm btn-sm mr-2 mb-2" href="/hostel/student/view/'. $student->ic .'">
+                                <i class="ti-info-alt">
+                                </i>
+                                View
+                            </a>
+                            ';
+                $content .= '</td>';
+           
+            }
+            $content .= '</tr></tbody>';
+
+            return $content;
+
+    }
+
+    public function getStudentDetails()
+    {
+        $student = DB::connection('mysql2')->table('students')
+                   ->leftjoin('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
+                   ->leftjoin('tblstudent_address', 'students.ic', 'tblstudent_address.student_ic')
+                   ->leftjoin('tblstudent_pass', 'students.ic', 'tblstudent_pass.student_ic')
+                   ->leftjoin('student_form', 'students.ic', 'student_form.student_ic')
+                   ->join('sessions', 'students.session', 'sessions.SessionID')
+                   ->select('students.*', 'tblstudent_personal.*', 'tblstudent_address.*', 'tblstudent_pass.*', 'student_form.*', 'tblstudent_personal.state_id AS place_birth', 'sessions.SessionName AS session')
+                   ->where('ic',request()->ic)->first();
+
+        $data['waris'] = DB::connection('mysql2')->table('tblstudent_waris')->where('student_ic', $student->ic)->get();
+
+        //dd($data['waris']);
+
+        $program = DB::connection('mysql2')->table('tblprogramme')->get();
+
+        $session = DB::connection('mysql2')->table('sessions')->get();
+
+        $data['batch'] = DB::connection('mysql2')->table('tblbatch')->get();
+
+        $data['state'] = DB::connection('mysql2')->table('tblstate')->orderBy('state_name')->get();
+
+        $data['gender'] = DB::connection('mysql2')->table('tblsex')->get();
+
+        $data['race'] = DB::connection('mysql2')->table('tblnationality')->orderBy('nationality_name')->get();
+
+        $data['relationship'] = DB::connection('mysql2')->table('tblrelationship')->get();
+
+        $data['wstatus'] = DB::connection('mysql2')->table('tblwaris_status')->get();
+
+        $data['religion'] =  DB::connection('mysql2')->table('tblreligion')->orderBy('religion_name')->get();
+
+        $data['CL'] = DB::connection('mysql2')->table('tblcitizenship_level')->get();
+
+        $data['citizen'] = DB::connection('mysql2')->table('tblcitizenship')->get();
+
+        $data['mstatus'] = DB::connection('mysql2')->table('tblmarriage')->get();
+
+        $data['EA'] = DB::connection('mysql2')->table('tbledu_advisor')->get();
+
+        $data['pass'] = DB::connection('mysql2')->table('tblpass_type')->get();
+
+        $data['country'] = DB::connection('mysql2')->table('tblcountry')->get();
+        
+        $data['dun'] = DB::connection('mysql2')->table('tbldun')->orderBy('name')->get();
+
+        $data['parlimen'] = DB::connection('mysql2')->table('tblparlimen')->orderBy('name')->get();
+
+        $data['qualification'] = DB::connection('mysql2')->table('tblqualification_std')->get();
+
+        return view('hostel.student.view.getStudentView', compact(['student','program','session','data']));
+
+    }
+
     public function hostelCheckout()
     {
 

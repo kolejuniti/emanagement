@@ -52,6 +52,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hostel/register/{id}/getStudentInfo', [App\Http\Controllers\HostelController::class, 'getStudentInfo']);
     Route::post('/hostel/register/{id}/registerStudent', [App\Http\Controllers\HostelController::class, 'registerStudent']);
     Route::post('/hostel/register/{id}/deleteStudent', [App\Http\Controllers\HostelController::class, 'deleteStudent']);
+    Route::get('/hostel/student/list', [App\Http\Controllers\HostelController::class, 'studentList'])->name('hostel.student.list');
+    Route::post('/hostel/student/list/getStudentListIndex', [App\Http\Controllers\HostelController::class, 'getStudentListIndex'])->name('hostel.student.list.getStudentListIndex');
+    Route::get('/hostel/student/view', [App\Http\Controllers\HostelController::class, 'studentView'])->name('hostel.student.view');
+    Route::post('/hostel/student/view/getStudentListIndex2', [App\Http\Controllers\HostelController::class, 'getStudentListIndex2'])->name('hostel.student.view.getStudentListIndex2');
+    Route::get('/hostel/student/view/{ic}', [App\Http\Controllers\HostelController::class, 'getStudentDetails']);
     Route::get('/hostel/student/checkout', [App\Http\Controllers\HostelController::class, 'hostelCheckout'])->name('hostel.student.checkout');
     Route::post('/hostel/student/checkout/getStudentInfo2', [App\Http\Controllers\HostelController::class, 'getStudentInfo2']);
     Route::post('/hostel/student/checkout/checkoutStudent', [App\Http\Controllers\HostelController::class, 'checkoutStudent']);
