@@ -1901,4 +1901,226 @@ class HostelController extends Controller
 
     }
 
+    public function studentReportRs()
+    {
+
+        $data['session'] = DB::connection('mysql2')->table('sessions')->get();
+
+        return view('hostel.report.reportRs.reportRs', compact('data'));
+
+    }
+
+    public function getStudentReportRs(Request $request)
+    {
+
+        if($request->from && $request->to)
+        {
+
+            
+            $data['R1M'] = 0;
+            $data['R1F'] = 0;
+
+            $data['R2M'] = 0;
+            $data['R2F'] = 0;
+
+            $data['WM'] = 0;
+            $data['WF'] = 0;
+
+            $data['NAM'] = 0;
+            $data['NAF'] = 0;
+
+            // Define a function to create the base query
+            $baseQuery = function () use ($request) {
+                return DB::connection('mysql2')->table('students')
+                    ->leftjoin('tblstudent_personal', 'students.ic', '=', 'tblstudent_personal.student_ic')
+                    ->leftjoin('sessions', 'students.intake', '=', 'sessions.SessionID')
+                    ->leftjoin('tblprogramme', 'students.program', '=', 'tblprogramme.id')
+                    ->leftjoin('tbledu_advisor', 'tblstudent_personal.advisor_id', '=', 'tbledu_advisor.id')
+                    ->leftjoin('tblsex', 'tblstudent_personal.sex_id', '=', 'tblsex.id')
+                    ->leftjoin('tblstudent_status', 'students.status', '=', 'tblstudent_status.id')
+                    ->where('students.semester', 1)
+                    ->whereBetween('students.date_offer', [$request->from, $request->to])
+                    ->select(
+                        'students.*', 'tblstudent_personal.no_tel', 'tblstudent_personal.qualification', 'sessions.SessionName',
+                        'tblprogramme.progcode', 'tbledu_advisor.name AS ea', 'tblsex.code AS sex',
+                        'tblstudent_status.name AS status'
+                    );
+            };
+
+            // Use the base query for studentOne
+            $studentOneQuery = ($baseQuery)()->where('students.status', 1);
+            $data['studentR1'] = $studentOneQuery->get();
+
+            // Use the base query for studentR2
+            $data['studentR2'] = ($baseQuery)()
+                ->wherein('students.status', [2,6,16,17])
+                ->get();
+
+            // Use the base query for studentR2
+            $data['withdraw'] = ($baseQuery)()
+                ->wherein('students.status', [4])
+                ->get();
+
+            // Use the base query for studentR2
+            $data['notActive'] = ($baseQuery)()
+                ->wherein('students.status', [14])
+                ->get();
+
+            $data['ref1'] = [];
+            $data['ref2'] = [];
+
+            foreach($data['studentR1'] as $key => $student)
+            {
+
+                $results = [];
+
+                $data['resultR1'][] = DB::connection('mysql2')->table('tblpayment')
+                                ->leftjoin('tblpaymentdtl', 'tblpayment.id', 'tblpaymentdtl.payment_id')
+                                ->leftjoin('tblstudentclaim', 'tblpaymentdtl.claim_type_id', 'tblstudentclaim.id')
+                                ->where('tblpayment.student_ic', $student->ic)
+                                ->where('tblpayment.process_status_id', 2)
+                                ->whereNotIn('tblpayment.process_type_id', [8])
+                                ->whereNotIn('tblstudentclaim.groupid', [4,5])
+                                ->select(
+
+                                    DB::connection('mysql2')->raw('CASE
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) < 250 THEN "R"
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) >= 250 THEN "R1"
+                                            END AS group_alias'),
+                                    DB::connection('mysql2')->raw('IFNULL(SUM(tblpaymentdtl.amount), 0) AS amount')
+
+                                )->first();
+
+                if($student->sex == 'L')
+                {
+                    $data['R1M'] = $data['R1M'] + 1;
+
+                }elseif($student->sex == 'P') 
+                {
+
+                    $data['R1F'] = $data['R1F'] + 1;
+                    
+                }
+
+                $data['quaR1'][$key] = DB::connection('mysql2')->table('tblqualification_std')->where('id', $student->qualification)->value('name');
+
+            }
+
+            foreach($data['studentR2'] as $key => $student)
+            {
+
+                $results = [];
+
+                $data['resultR2'][] = DB::connection('mysql2')->table('tblpayment')
+                                    ->leftjoin('tblpaymentdtl', 'tblpayment.id', 'tblpaymentdtl.payment_id')
+                                    ->leftjoin('tblstudentclaim', 'tblpaymentdtl.claim_type_id', 'tblstudentclaim.id')
+                                    ->where('tblpayment.student_ic', $student->ic)
+                                    ->where('tblpayment.process_status_id', 2)
+                                    ->whereNotIn('tblpayment.process_type_id', [8])
+                                    ->whereNotIn('tblstudentclaim.groupid', [4,5])
+                                    ->select(
+
+                                    DB::raw('CASE
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) < 250 THEN "R"
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) >= 250 THEN "R1"
+                                                END AS group_alias'),
+                                    DB::raw('IFNULL(SUM(tblpaymentdtl.amount), 0) AS amount')
+
+                                    )->first();
+
+                if($student->sex == 'L')
+                {
+                    $data['R2M'] = $data['R2M'] + 1;
+
+                }elseif($student->sex == 'P') 
+                {
+
+                    $data['R2F'] = $data['R2F'] + 1;
+                    
+                }
+
+                $data['quaR2'][$key] = DB::connection('mysql2')->table('tblqualification_std')->where('id', $student->qualification)->value('name');
+
+            }
+
+            foreach($data['withdraw'] as $key => $student)
+            {
+
+                $results = [];
+
+                $data['resultWithdraw'][] = DB::connection('mysql2')->table('tblpayment')
+                                ->leftjoin('tblpaymentdtl', 'tblpayment.id', 'tblpaymentdtl.payment_id')
+                                ->leftjoin('tblstudentclaim', 'tblpaymentdtl.claim_type_id', 'tblstudentclaim.id')
+                                ->where('tblpayment.student_ic', $student->ic)
+                                ->where('tblpayment.process_status_id', 2)
+                                ->whereNotIn('tblpayment.process_type_id', [8])
+                                ->whereNotIn('tblstudentclaim.groupid', [4,5])
+                                ->select(
+
+                                    DB::raw('CASE
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) < 250 THEN "R"
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) >= 250 THEN "R1"
+                                            END AS group_alias'),
+                                    DB::raw('IFNULL(SUM(tblpaymentdtl.amount), 0) AS amount')
+
+                                )->first();
+
+                if($student->sex == 'L')
+                {
+                    $data['WM'] = $data['WM'] + 1;
+
+                }elseif($student->sex == 'P') 
+                {
+
+                    $data['WF'] = $data['WF'] + 1;
+                    
+                }
+
+                $data['quaW'][$key] = DB::connection('mysql2')->table('tblqualification_std')->where('id', $student->qualification)->value('name');
+
+            }
+
+            foreach($data['notActive'] as $key => $student)
+            {
+
+                $results = [];
+
+                $data['resultNA'][] = DB::connection('mysql2')->table('tblpayment')
+                                ->leftjoin('tblpaymentdtl', 'tblpayment.id', 'tblpaymentdtl.payment_id')
+                                ->leftjoin('tblstudentclaim', 'tblpaymentdtl.claim_type_id', 'tblstudentclaim.id')
+                                ->where('tblpayment.student_ic', $student->ic)
+                                ->where('tblpayment.process_status_id', 2)
+                                ->whereNotIn('tblpayment.process_type_id', [8])
+                                ->whereNotIn('tblstudentclaim.groupid', [4,5])
+                                ->select(
+
+                                    DB::raw('CASE
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) < 250 THEN "R"
+                                                WHEN IFNULL(SUM(tblpaymentdtl.amount), 0) >= 250 THEN "R1"
+                                            END AS group_alias'),
+                                    DB::raw('IFNULL(SUM(tblpaymentdtl.amount), 0) AS amount')
+
+                                )->first();
+
+                if($student->sex == 'L')
+                {
+                    $data['NAM'] = $data['NAM'] + 1;
+
+                }elseif($student->sex == 'P') 
+                {
+
+                    $data['NAF'] = $data['NAF'] + 1;
+                    
+                }
+
+                $data['quaNA'][$key] = DB::connection('mysql2')->table('tblqualification_std')->where('id', $student->qualification)->value('name');
+
+            }
+
+            return view('hostel.report.reportRs.getReportRs', compact('data'));
+
+        }
+
+    }
+
 }
