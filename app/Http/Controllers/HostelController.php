@@ -1499,10 +1499,11 @@ class HostelController extends Controller
         // Step 3: Fetch the hostel data and join with the block unit table
         $hostelData = DB::table('tblstudent_hostel')
         ->join('tblblock_unit', 'tblstudent_hostel.block_unit_id', '=', 'tblblock_unit.id')
+        ->join('tblblock', 'tblblock_unit.block_id', '=', 'tblblock.id')
         ->where('tblstudent_hostel.block_unit_id', $request->id)
         ->where('tblstudent_hostel.status', 'IN')
         ->whereIn('tblstudent_hostel.student_ic', $studentIcs)
-        ->select('tblstudent_hostel.*', 'tblblock_unit.no_unit')
+        ->select('tblstudent_hostel.*', 'tblblock_unit.no_unit', DB::raw('CONCAT(tblblock.name, " - ", tblblock.location) AS block_unit'))
         ->get();
 
         // Step 4: Add the student names to the hostel data
@@ -1540,6 +1541,12 @@ class HostelController extends Controller
                             <th>
                                 Semester
                             </th>
+                            <th>
+                                Block
+                            </th>
+                            <th>
+                                Unit
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="unit-table">';
@@ -1562,6 +1569,12 @@ class HostelController extends Controller
                 </td>
                 <td>
                 '. $std->semester .'
+                </td>
+                <td>
+                '. $std->block_unit .'
+                </td>
+                <td>
+                '. $std->no_unit .'
                 </td>
             </tr>';
            
