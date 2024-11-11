@@ -1852,7 +1852,7 @@ class HostelController extends Controller
 
             $data['active'][$key] = count(DB::connection('mysql2')->table('students')
             ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
-                                    // ->orderBy('tblstudent_hostel')
+                                    ->orderBy('tblstudent_hostel.id', 'DESC')
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.status', 2],
