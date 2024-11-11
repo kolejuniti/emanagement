@@ -1852,11 +1852,13 @@ class HostelController extends Controller
 
             $data['active'][$key] = count(DB::connection('mysql2')->table('students')
             ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
+                                    // ->orderBy('tblstudent_hostel')
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.status', 2],
                                     ['students.campus_id', 1],
-                                    ['students.student_status', 2]
+                                    ['students.student_status', 2],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['active_leave'][$key] = count(DB::connection('mysql2')->table('students')
