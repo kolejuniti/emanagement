@@ -397,7 +397,6 @@
                             @php
                               $active = count(DB::connection('mysql2')->table('students')
                               ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
-                              ->orderBy('tblstudent_hostel.id', 'DESC')
                               ->where([
                                     ['students.status', 2],
                                     ['students.campus_id', 1],
