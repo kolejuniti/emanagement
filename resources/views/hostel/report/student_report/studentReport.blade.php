@@ -401,7 +401,7 @@
                               ->where([
                                     ['students.status', 2],
                                     ['students.campus_id', 1],
-                                    ['students.student_status', 2]
+                                    ['students.student_status', 2],
                                     ['tblstudent_hostel.status', 'IN']
                                     ])->get());
                             @endphp
