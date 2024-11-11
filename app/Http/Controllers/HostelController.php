@@ -1855,9 +1855,9 @@ class HostelController extends Controller
                                     ->orderBy('tblstudent_hostel.id', 'DESC')
                                     ->where([
                                     ['students.program', $prg->id],
-                                    ['students.status', 2],
-                                    ['students.campus_id', 1],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.campus_id', 1],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
