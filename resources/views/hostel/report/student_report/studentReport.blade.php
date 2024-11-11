@@ -398,9 +398,6 @@
                               $active = count(DB::connection('mysql2')->table('students')
                               ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
                               ->where([
-                                    ['students.status', 2],
-                                    ['students.campus_id', 1],
-                                    ['students.student_status', 2],
                                     ['tblstudent_hostel.status', 'IN']
                                     ])->get());
                             @endphp
