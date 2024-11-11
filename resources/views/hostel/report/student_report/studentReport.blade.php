@@ -462,9 +462,10 @@
 
                                           ->where([
                                             ['students.semester', $sem->id],
-                                            ['students.status', 2],
-                                            ['students.student_status', 2],
-                                            ['students.campus_id', 1]
+                                            // ['students.status', 2],
+                                            // ['students.student_status', 2],
+                                            // ['students.campus_id', 1],
+                                            ['tblstudent_hostel.status', 'IN']
                                           ])->get());
 
                               }else{
@@ -474,9 +475,10 @@
 
                                           ->where([
                                             ['students.semester', $sem->id],
-                                            ['students.status', 2],
-                                            ['students.student_status', 1],
-                                            ['students.campus_id', 1]
+                                            // ['students.status', 2],
+                                            // ['students.student_status', 1],
+                                            // ['students.campus_id', 1],
+                                            ['tblstudent_hostel.status', 'IN']
                                           ])->get());
 
                                 $total = count(DB::connection('mysql2')->table('students')
@@ -484,9 +486,10 @@
 
                                           ->where([
                                             ['students.semester', $sem->id],
-                                            ['students.status', 2],
-                                            ['students.student_status', 2],
-                                            ['students.campus_id', 1]
+                                            // ['students.status', 2],
+                                            // ['students.student_status', 2],
+                                            // ['students.campus_id', 1],
+                                            ['tblstudent_hostel.status', 'IN']
                                           ])->get());
 
                               }

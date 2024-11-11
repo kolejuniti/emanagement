@@ -1634,9 +1634,10 @@ class HostelController extends Controller
                                        ->join('tblstudent_personal', 'students.ic', 'tblstudent_personal.student_ic')
                                        ->where([
                                        ['students.program', $prg->id],
-                                       ['students.status', 2],
-                                       ['students.student_status', 1],
-                                       ['tblstudent_personal.sex_id', 1]
+                                    //    ['students.status', 2],
+                                    //    ['students.student_status', 1],
+                                    //    ['tblstudent_personal.sex_id', 1],
+                                       ['tblstudent_hostel.status', 'IN']
                                        ])->get());
    
             $data['holding_f1'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1655,10 +1656,11 @@ class HostelController extends Controller
                                  ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 1],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
             
             $data['fs1'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1667,10 +1669,11 @@ class HostelController extends Controller
                                  ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 1],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
             
             $data['ms2'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1679,10 +1682,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 2],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs2'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1691,10 +1695,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 2],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['ms3'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1703,10 +1708,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 3],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs3'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1715,10 +1721,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 3],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
                                     
             $data['ms4'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1727,10 +1734,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 4],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs4'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1739,10 +1747,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 4],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['ms5'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1751,10 +1760,11 @@ class HostelController extends Controller
                                      ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 5],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs5'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1763,10 +1773,11 @@ class HostelController extends Controller
                                      ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 5],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['ms6'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1775,10 +1786,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 6],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs6'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1787,10 +1799,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 6],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['ms7'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1799,10 +1812,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 7],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs7'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1811,10 +1825,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 7],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['ms8'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1823,10 +1838,11 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 8],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 1],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['fs8'][$key] = count(DB::connection('mysql2')->table('students')
@@ -1835,19 +1851,21 @@ class HostelController extends Controller
                                     ->where([
                                     ['students.program', $prg->id],
                                     ['students.semester', 8],
-                                    ['students.status', 2],
-                                    ['students.student_status', 2],
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 2],
                                     ['tblstudent_personal.sex_id', 2],
-                                    ['students.campus_id', 1]
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['industry'][$key] = count(DB::connection('mysql2')->table('students')
             ->join(DB::connection()->getDatabaseName() . '.tblstudent_hostel', 'students.ic', '=', 'tblstudent_hostel.student_ic')
                                     ->where([
                                     ['students.program', $prg->id],
-                                    ['students.status', 2],
-                                    ['students.student_status', 4],
-                                    ['students.campus_id', 1]
+                                    // ['students.status', 2],
+                                    // ['students.student_status', 4],
+                                    // ['students.campus_id', 1],
+                                    ['tblstudent_hostel.status', 'IN']
                                     ])->get());
 
             $data['active'][$key] = count(DB::connection('mysql2')->table('students')
