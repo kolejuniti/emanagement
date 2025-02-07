@@ -1114,7 +1114,7 @@ class HostelController extends Controller
     public function debitNote()
     {
 
-        return view('hostel.student.debit');
+        return view('hostel.student.debit.debit');
 
     }
 
@@ -1149,7 +1149,7 @@ class HostelController extends Controller
         
         // $data['type'] = DB::connection('mysql2')->table('tblstudentclaim')->get();
 
-        return view('hostel.student.debitGetStudent', compact('data'));
+        return view('hostel.student.debit.debitGetStudent', compact('data'));
 
     }
 
