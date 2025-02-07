@@ -13,7 +13,7 @@ window.renderNodeComponent = function(data) {
   document.getElementById('getModal').innerHTML = ''; // Clear previous content
   document.getElementById('getModal').appendChild(container);
 
-  ReactDOM.render(
+  ReactDOM.render(  
     <RemarkComponent data={data} />,
     document.getElementById('remarkComponent')
   );
@@ -36,6 +36,5 @@ window.renderAnnouncementSystem = () => {
 
 if (document.getElementById('announcementBanner')) {
   ReactDOM.render(<AnnouncementBanner />, document.getElementById('announcementBanner'));
-  
 }
 
