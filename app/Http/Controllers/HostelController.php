@@ -1111,6 +1111,130 @@ class HostelController extends Controller
 
     }
 
+    public function debitNote()
+    {
+
+        return view('hostel.student.debit');
+
+    }
+
+    public function getStudentDebit(Request $request)
+    {
+
+        $data['student'] = DB::connection('mysql2')->table('students')
+                           ->join('tblstudent_status', 'students.status', 'tblstudent_status.id')
+                           ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+                           ->join('sessions AS t1', 'students.intake', 't1.SessionID')
+                           ->join('sessions AS t2', 'students.session', 't2.SessionID')
+                           ->select('students.*', 'tblstudent_status.name AS status', 'tblprogramme.progname AS program', 'students.program AS progid', 't1.SessionName AS intake_name', 't2.SessionName AS session_name')
+                           ->where('ic', $request->student)->first();
+
+        // if(Auth::user()->usrtype == "AR")
+        // {
+        //     $items = [9,10,11,12,13,14,15,16,17,20,21,22,24,25,26,27];
+
+        //     $data['type'] = DB::connection('mysql2')->table('tblstudentclaim')->whereNotIn('id', $items)->get();
+
+        // }elseif(Auth::user()->usrtype == "HEA")
+        // {
+            $items = [31];
+
+            $data['type'] = DB::connection('mysql2')->table('tblstudentclaim')->whereIn('id', $items)->get();
+
+        // }else{
+
+        //     $data['type'] = DB::connection('mysql2')->table('tblstudentclaim')->get();
+
+        // }
+        
+        // $data['type'] = DB::connection('mysql2')->table('tblstudentclaim')->get();
+
+        return view('hostel.student.debitGetStudent', compact('data'));
+
+    }
+
+    public function storeDebit(Request $request)
+    {
+
+        $paymentData = $request->paymentData;
+
+        $validator = Validator::make($request->all(), [
+            'paymentData' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return ["message"=>"Field Error", "error" => $validator->messages()->get('*')];
+        }
+
+        try{ 
+            DB::beginTransaction();
+            DB::connection()->enableQueryLog();
+
+            try{
+                $payment = json_decode($paymentData);
+                
+                if($payment->type != null && $payment->unit != null && $payment->amount != null && $payment->remark != null)
+                {
+                    $stddetail = DB::connection('mysql2')->table('students')->where('ic', $payment->ic)->first();
+
+                    $ref_no = DB::connection('mysql2')->table('tblref_no')
+                      ->where('process_type_id', 4)->first();
+
+                    DB::connection('mysql2')->table('tblref_no')->where('id', $ref_no->id)->update([
+                        'ref_no' => $ref_no->ref_no + 1
+                    ]);
+
+                    $id = DB::connection('mysql2')->table('tblclaim')->insertGetId([
+                        'student_ic' => $payment->ic,
+                        'date' => date('Y-m-d'),
+                        'ref_no' => $ref_no->code . $ref_no->ref_no + 1,
+                        'session_id' => $stddetail->session,
+                        'semester_id' => $stddetail->semester,
+                        'program_id' => $stddetail->program,
+                        'process_status_id' => 2,
+                        'process_type_id' => 4,
+                        'remark' => $payment->remark,
+                        'add_staffID' => Auth::user()->ic,
+                        'add_date' => date('Y-m-d'),
+                        'mod_staffID' => Auth::user()->ic,
+                        'mod_date' => date('Y-m-d')
+                    ]);
+
+                    DB::connection('mysql2')->table('tblclaimdtl')->insert([
+                        'claim_id' => $id,
+                        'claim_package_id' => $payment->type,
+                        'price' => $payment->amount,
+                        'unit' => $payment->unit,
+                        'amount' => $payment->amount * $payment->unit,
+                        'add_staffID' => Auth::user()->ic,
+                        'add_date' => date('Y-m-d'),
+                        'mod_staffID' => Auth::user()->ic,
+                        'mod_date' => date('Y-m-d')
+                    ]);
+                
+                }else{
+                    return ["message" => "Please fill all required field!"];
+                }
+                
+            }catch(QueryException $ex){
+                DB::rollback();
+                if($ex->getCode() == 23000){
+                    return ["message"=>"Class code already existed inside the system"];
+                }else{
+                    \Log::debug($ex);
+                    return ["message"=>"DB Error"];
+                }
+            }
+
+            DB::commit();
+        }catch(Exception $ex){
+            return ["message"=>"Error"];
+        }
+
+        return ["message" => "Success"];
+
+    }
+
     public function getStudentInfo2(Request $request)
     {
 
