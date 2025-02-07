@@ -44194,7 +44194,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var _components_RemarkComponent_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/RemarkComponent.jsx */ "./resources/js/components/RemarkComponent.jsx");
-/* harmony import */ var _react_app_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./react-app.js */ "./resources/js/react-app.js");
+/* harmony import */ var _components_annoucementStudent_annoucementStudent_jsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/annoucementStudent/annoucementStudent.jsx */ "./resources/js/components/annoucementStudent/annoucementStudent.jsx");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 
 
@@ -44213,33 +44213,14 @@ window.renderNodeComponent = function (data) {
   }), document.getElementById('remarkComponent'));
   $('#uploadModal').modal('show');
 };
-
-/***/ }),
-
-/***/ "./resources/js/react-app.js":
-/*!***********************************!*\
-  !*** ./resources/js/react-app.js ***!
-  \***********************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var _components_annoucementStudent_annoucementStudent_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/annoucementStudent/annoucementStudent.jsx */ "./resources/js/components/annoucementStudent/annoucementStudent.jsx");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
-
-
-
-
 window.renderAnnouncementSystem = function () {
   var container = document.createElement('div');
   container.id = 'announcementSystem';
   $('#form-student').html(container);
-  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_components_annoucementStudent_annoucementStudent_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {}), document.getElementById('announcementSystem'));
+  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_components_annoucementStudent_annoucementStudent_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {}), document.getElementById('announcementSystem'));
 };
 if (document.getElementById('announcementBanner')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(AnnouncementBanner, {}), document.getElementById('announcementBanner'));
+  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(AnnouncementBanner, {}), document.getElementById('announcementBanner'));
 }
 
 /***/ })

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RemarkComponent from './components/RemarkComponent.jsx';
-import './react-app.js';
+import AnnouncementSystem from './components/annoucementStudent/annoucementStudent.jsx';
 
 
 console.log('app.js is loaded');
@@ -20,3 +20,20 @@ window.renderNodeComponent = function(data) {
 
   $('#uploadModal').modal('show');
 };
+
+window.renderAnnouncementSystem = () => {
+
+  const container = document.createElement('div');
+  container.id = 'announcementSystem';
+  $('#form-student').html(container);
+
+  ReactDOM.render(
+      <AnnouncementSystem />,
+      document.getElementById('announcementSystem')
+  )
+
+}
+
+if (document.getElementById('announcementBanner')) {
+  ReactDOM.render(<AnnouncementBanner />, document.getElementById('announcementBanner'));
+}
