@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RemarkComponent from './components/RemarkComponent.jsx';
+import './react-app.js';
+
 
 console.log('app.js is loaded');
 
@@ -18,6 +20,3 @@ window.renderNodeComponent = function(data) {
 
   $('#uploadModal').modal('show');
 };
-
-// Import React setup
-require('./react-app');
