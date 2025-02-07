@@ -98,7 +98,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
 
     Route::get('/all/student/announcements', function () {
-        return view('alluser.student.announcements.index');
+        return view('hostel.student.announcements.index');
     })->name('all.student.announcements');
 
 });
