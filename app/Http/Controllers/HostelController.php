@@ -1195,9 +1195,9 @@ class HostelController extends Controller
                         'process_status_id' => 2,
                         'process_type_id' => 4,
                         'remark' => $payment->remark,
-                        'add_staffID' => Auth::user()->ic,
+                        'add_staffID' => '000000000001',
                         'add_date' => date('Y-m-d'),
-                        'mod_staffID' => Auth::user()->ic,
+                        'mod_staffID' => '000000000001',
                         'mod_date' => date('Y-m-d')
                     ]);
 
@@ -1207,9 +1207,9 @@ class HostelController extends Controller
                         'price' => $payment->amount,
                         'unit' => $payment->unit,
                         'amount' => $payment->amount * $payment->unit,
-                        'add_staffID' => Auth::user()->ic,
+                        'add_staffID' => '000000000001',
                         'add_date' => date('Y-m-d'),
-                        'mod_staffID' => Auth::user()->ic,
+                        'mod_staffID' => '000000000001',
                         'mod_date' => date('Y-m-d')
                     ]);
                 
