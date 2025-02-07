@@ -30,15 +30,11 @@ window.renderAnnouncementSystem = () => {
   ReactDOM.render(
       <AnnouncementSystem />,
       document.getElementById('announcementSystem')
-
-
   )
 
 }
 
 if (document.getElementById('announcementBanner')) {
   ReactDOM.render(<AnnouncementBanner />, document.getElementById('announcementBanner'));
-
-  alert('test');
 }
 
