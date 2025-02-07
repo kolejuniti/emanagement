@@ -743,4 +743,103 @@ class UserController extends Controller
         return back();
 
     }
+
+    // Display a listing of the announcements
+    public function indexAnnouncements()
+    {
+        $userRole = Auth::user()->type;
+
+        // if ($userRole === 'hostel') {
+        //     $type = 'hostel';
+        // } else if ($userRole === 'FN') {
+        //     $type = 'Finance';
+        // } else if ($userRole === 'AR') {
+        //     $type = 'Pendaftar Akademik';
+        // } else if ($userRole === 'RGS') {
+        //     $type = 'Pendaftar';
+        // }
+
+        $announcements = DB::connection('mysql2')->table('tblstdannoucement')->where('department', $userRole)->get();
+
+        // Debugging: Check the data being fetched
+        error_log($announcements);
+
+        return response()->json($announcements);
+    }
+
+
+    // Store a newly created announcement
+    public function storeAnnouncements(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'department' => 'required|string|max:100',
+            'priority' => 'required|string|in:low,medium,high',
+        ]);
+
+        $id = DB::connection('mysql2')->table('tblstdannoucement')->insertGetId($validated);
+
+        return response()->json(['message' => 'Announcement created successfully', 'id' => $id]);
+    }
+
+    // Display the specified announcement
+    public function showAnnouncements($id)
+    {
+        $announcement = DB::connection('mysql2')->table('tblstdannoucement')->where('id', $id)->first();
+
+        if (!$announcement) {
+            return response()->json(['message' => 'Announcement not found'], 404);
+        }
+
+        return response()->json($announcement);
+    }
+
+    // Update the specified announcement
+    public function updateAnnouncements(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'content' => 'sometimes|required|string',
+            'start_date' => 'sometimes|required|date',
+            'end_date' => 'sometimes|required|date|after_or_equal:start_date',
+            'department' => 'sometimes|required|string|max:100',
+            'priority' => 'sometimes|required|string|in:low,medium,high',
+        ]);
+
+        $updated = DB::connection('mysql2')->table('tblstdannoucement')->where('id', $id)->update($validated);
+
+        if ($updated) {
+            return response()->json(['message' => 'Announcement updated successfully']);
+        }
+
+        return response()->json(['message' => 'No changes made or announcement not found'], 404);
+    }
+
+    // Remove the specified announcement
+    public function destroyAnnouncements($id)
+    {
+        $deleted = DB::connection('mysql2')->table('tblstdannoucement')->where('id', $id)->delete();
+
+        if ($deleted) {
+            return response()->json(['message' => 'Announcement deleted successfully']);
+        }
+
+        return response()->json(['message' => 'Announcement not found'], 404);
+    }
+
+    public function getBannerAnnouncement()
+    {
+        $announcements = DB::connection('mysql2')->table('tblstdannoucement')
+        ->whereDate('start_date', '<=', now()) // Fetch rows where start_date is before or equal to today
+        ->whereDate('end_date', '>=', now())   // Fetch rows where end_date is after or equal to today
+        ->orderByRaw("FIELD(priority, 'high', 'medium', 'low')") // Sort by priority
+        ->orderBy('created_at', 'desc') // Optional: Further sort by creation date
+        ->get();
+
+
+        return response()->json($announcements);
+    }
 }

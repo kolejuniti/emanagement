@@ -88,6 +88,19 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/user/spm/{ic}', [App\Http\Controllers\UserController::class, 'spmIndex'])->name('user.spm');
     Route::post('/user/spm/{ic}/store', [App\Http\Controllers\UserController::class, 'spmStore'])->name('user.spm.store');
     
+    Route::prefix('all')->group(function () {
+        Route::get('/student/announcements/getannoucement', [App\Http\Controllers\UserController::class, 'indexAnnouncements']);
+        Route::post('/student/announcements/post', [App\Http\Controllers\UserController::class, 'storeAnnouncements']);
+        Route::get('/student/announcements/get/{id}', [App\Http\Controllers\UserController::class, 'showAnnouncements']);
+        Route::put('/student/announcements/put/{id}', [App\Http\Controllers\UserController::class, 'updateAnnouncements']);
+        Route::delete('/student/announcements/delete/{id}', [App\Http\Controllers\UserController::class, 'destroyAnnouncements']);
+        Route::get('/student/announcements/getBannerAnnouncement', [App\Http\Controllers\UserController::class, 'getBannerAnnouncement']);
+    });
+
+    Route::get('/all/student/announcements', function () {
+        return view('alluser.student.announcements.index');
+    })->name('all.student.announcements');
+
 });
 
 

@@ -18,3 +18,6 @@ window.renderNodeComponent = function(data) {
 
   $('#uploadModal').modal('show');
 };
+
+// Import React setup
+require('./react-app');
