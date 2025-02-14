@@ -213,7 +213,7 @@ const AnnouncementManagement = () => {
                         disabled // This makes the select field read-only
                         >
                         <option value="Admin">Admin</option>
-                        <option value="Finance">Finance</option>
+                        <option value="hostel">Hostel</option>
                         <option value="Pendaftar Akademik">Pendaftar Akademik</option>
                         <option value="Pendaftar">Pendaftar</option>
                     </select>
