@@ -175,8 +175,65 @@ const AnnouncementManagement = () => {
                     }
                   />
                 </div>
-                {/* Other form fields */}
-                {/* ... */}
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Start Date</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={newAnnouncement.start_date}
+                      onChange={(e) =>
+                        setNewAnnouncement({ ...newAnnouncement, start_date: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">End Date</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={newAnnouncement.end_date}
+                      onChange={(e) =>
+                        setNewAnnouncement({ ...newAnnouncement, end_date: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <label className="form-label">Department</label>
+                        <select
+                        className="form-select"
+                        value={newAnnouncement.department}
+                        onChange={(e) =>
+                        setNewAnnouncement({ ...newAnnouncement, department: e.target.value })
+                        }
+                        disabled // This makes the select field read-only
+                        >
+                        <option value="Admin">Admin</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Pendaftar Akademik">Pendaftar Akademik</option>
+                        <option value="Pendaftar">Pendaftar</option>
+                    </select>
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label">Priority</label>
+                    <select
+                      className="form-select"
+                      value={newAnnouncement.priority}
+                      onChange={(e) =>
+                        setNewAnnouncement({ ...newAnnouncement, priority: e.target.value })
+                      }
+                    >
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
+                </div>
                 <button type="submit" className="btn btn-primary">
                   Publish Announcement
                 </button>
