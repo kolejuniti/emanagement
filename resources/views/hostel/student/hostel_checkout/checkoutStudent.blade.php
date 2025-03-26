@@ -99,6 +99,9 @@
                               <a type="button" class="waves-effect waves-light btn btn-info btn-sm" onclick="checkoutStudent()">
                                 CHECKOUT
                               </a>
+                              <a type="button" class="waves-effect waves-light btn btn-primary btn-sm" onclick="printStudentSlip()" id="printBtn" style="display:none;">
+                                <i class="ti-printer"></i> PRINT SLIP
+                              </a>
                           </div>
                         </div>
                     </div>
@@ -200,6 +203,9 @@ function getStudInfo(student)
                 var students = response.history;
 
                 $('#idS').val(info.id);
+                
+                // Show the print button
+                $('#printBtn').show();
 
                 // Construct the HTML content dynamically
                 var newContent = "<div class='row mb-5'>" +
@@ -286,6 +292,9 @@ function checkoutStudent(){
                     var info = res.info;
 
                     var students = res.history;
+                    
+                    // Ensure print button remains visible
+                    $('#printBtn').show();
 
                     // Construct the HTML content dynamically
                     var newContent = "<div class='row mb-5'>" +
@@ -454,6 +463,17 @@ function deleteStudent(ids)
           }
       });
 
+}
+
+function printStudentSlip() {
+    var studentId = $('#student').val();
+    var idS = $('#idS').val();
+    
+    if (studentId && idS) {
+        window.open('/hostel/student/printStudentSlip/' + studentId, '_blank');
+    } else {
+        alert('Please select a student first');
+    }
 }
 
 </script>

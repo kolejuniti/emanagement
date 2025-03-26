@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/hostel/student/checkout', [App\Http\Controllers\HostelController::class, 'hostelCheckout'])->name('hostel.student.checkout');
     Route::post('/hostel/student/checkout/getStudentInfo2', [App\Http\Controllers\HostelController::class, 'getStudentInfo2']);
     Route::post('/hostel/student/checkout/checkoutStudent', [App\Http\Controllers\HostelController::class, 'checkoutStudent']);
+    Route::get('/hostel/student/printStudentSlip/{student}', [App\Http\Controllers\HostelController::class, 'printStudentSlip'])->name('hostel.student.printSlip');
     Route::get('/hostel/debit', [App\Http\Controllers\HostelController::class, 'debitNote'])->name('hostel.student.debit');
     Route::post('/hostel/debit/getStudent', [App\Http\Controllers\HostelController::class, 'getStudentDebit']);
     Route::post('/hostel/debit/storeDebit', [App\Http\Controllers\HostelController::class, 'storeDebit']);
