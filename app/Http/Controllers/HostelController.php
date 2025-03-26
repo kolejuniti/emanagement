@@ -1382,6 +1382,141 @@ class HostelController extends Controller
         return view('hostel.student.printStudentSlip', compact('data'));
     }
 
+    public function quotationStudentSlip($student)
+    {
+        $data = DB::connection('mysql2')->table('students')
+            ->leftJoin('tblpayment_method', 'tblpayment_method.id', '=', DB::raw('1')) // Assuming you want the method with id 1
+            ->leftJoin('tblstudentclaim', 'tblstudentclaim.id', '=', DB::raw('79')) // Assuming you want the type with id 79
+            ->where('students.ic', $student)
+            ->select('students.*', 'tblpayment_method.name AS payment_method_id', 'tblstudentclaim.name AS claim_type_id')
+            ->first();
+
+        return response()->json(['data' => $data]);
+    }
+
+    public function chargeStudentSlip($student)
+    {
+        
+        $stddetail = DB::connection('mysql2')->table('students')->where('ic', $student)->first();
+
+        // Check if payment has already been made today
+        $existingPayment = DB::connection('mysql2')->table('tblpayment')
+            ->where('student_ic', $student)
+            ->whereDate('date', date('Y-m-d'))
+            ->first();
+
+        if ($existingPayment) {
+            return response()->json(['message' => "Error: Payment has already been made today."], 400);
+        }
+
+        $ref_no = DB::connection('mysql2')->table('tblref_no')
+                      ->where('process_type_id', 8)
+                      ->select('tblref_no.*')->first();
+
+        $payment = DB::connection('mysql2')->table('tblpayment')->insertGetId([
+            'student_ic' => $student,
+            'date' => date('Y-m-d'),
+            'ref_no' => $ref_no->code . $ref_no->ref_no + 1,
+            'program_id' => $stddetail->program,
+            'session_id' => $stddetail->session,
+            'semester_id' => $stddetail->semester,
+            'amount' => 5,
+            'process_status_id' => 2,
+            'process_type_id' => 8,
+            'add_staffID' => '123455432123',
+            'add_date' => date('Y-m-d'),
+            'mod_staffID' => '123455432123',
+            'mod_date' => date('Y-m-d')
+        ]);
+
+        DB::connection('mysql2')->table('tblpaymentmethod')->insertGetId([
+            'payment_id' => $payment,
+            'claim_method_id' => 1,
+            'bank_id' => null,
+            'no_document' => null,
+            'amount' => 5,
+            'add_staffID' => '123455432123',
+            'add_date' => date('Y-m-d'),
+            'mod_staffID' => '123455432123',
+            'mod_date' => date('Y-m-d')
+        ]);
+
+        DB::connection('mysql2')->table('tblpaymentdtl')->insert([
+            'payment_id' => $payment,
+            'claim_type_id' => 79,
+            'amount' => 5,
+            'add_staffID' => '123455432123',
+            'add_date' => date('Y-m-d'),
+            'mod_staffID' => '123455432123',
+            'mod_date' => date('Y-m-d')
+        ]);
+
+        DB::connection('mysql2')->table('tblref_no')->where('id', $ref_no->id)->update([
+            'ref_no' => $ref_no->ref_no + 1
+        ]);
+
+        return response()->json(['message' => "Success", 'id' => $payment]);
+
+    }
+
+    public function getReceipt(Request $request)
+    {
+        $data['payment'] = DB::connection('mysql2')->table('tblpayment')->where('tblpayment.id', $request->id)
+                           ->join('sessions AS A2', 'tblpayment.session_id', 'A2.SessionID')
+                           ->join('tblprogramme', 'tblpayment.program_id', 'tblprogramme.id')
+                           ->select('tblpayment.*', 'tblprogramme.progname AS program', 'A2.SessionName AS session')
+                           ->first();
+
+        $data['staff'] = DB::connection('mysql2')->table('users')->where('ic', $data['payment']->add_staffID)->first();
+
+        $detail = DB::connection('mysql2')->table('tblpaymentdtl')
+                          ->join('tblstudentclaim', 'tblpaymentdtl.claim_type_id', 'tblstudentclaim.id')
+                          ->where('tblpaymentdtl.payment_id', $request->id)
+                          ->where('tblpaymentdtl.amount', '!=', 0.00)
+                          ->select('tblpaymentdtl.id', 'tblpaymentdtl.payment_id', 'tblpaymentdtl.claim_type_id', 
+                                  'tblpaymentdtl.add_staffID', 'tblpaymentdtl.add_date', 'tblpaymentdtl.mod_staffID',
+                                  'tblpaymentdtl.mod_date', DB::raw('SUM(tblpaymentdtl.amount) AS total_amount'), 
+                                  'tblstudentclaim.name', 'tblstudentclaim.groupid')
+                          ->groupBy('tblpaymentdtl.id', 'tblpaymentdtl.payment_id', 'tblpaymentdtl.claim_type_id',
+                                   'tblpaymentdtl.add_staffID', 'tblpaymentdtl.add_date', 'tblpaymentdtl.mod_staffID',
+                                   'tblpaymentdtl.mod_date', 'tblstudentclaim.name', 'tblstudentclaim.groupid');
+                          
+        $data['detail'] = $detail->get();
+
+        $data['total'] = DB::connection('mysql2')->table('tblpaymentdtl')
+                        ->where('tblpaymentdtl.payment_id', $request->id)
+                        ->sum('tblpaymentdtl.amount');
+
+
+        $method = DB::connection('mysql2')->table('tblpaymentmethod')
+                          ->join('tblpayment_method', 'tblpaymentmethod.claim_method_id', 'tblpayment_method.id')
+                          ->leftjoin('tblpayment_bank', 'tblpaymentmethod.bank_id', 'tblpayment_bank.id')
+                          ->where('tblpaymentmethod.payment_id', $request->id)
+                          ->select('tblpaymentmethod.id', 'tblpaymentmethod.claim_method_id', 'tblpaymentmethod.bank_id', 
+                                  'tblpaymentmethod.no_document', 'tblpayment_method.name AS method', 
+                                  'tblpayment_bank.name AS bank', DB::raw('SUM(tblpaymentmethod.amount) AS amount'))
+                          ->groupBy('tblpaymentmethod.id', 'tblpaymentmethod.claim_method_id', 'tblpaymentmethod.bank_id',
+                                   'tblpaymentmethod.no_document', 'tblpayment_method.name', 'tblpayment_bank.name');
+                          
+        $data['method'] = $method->get();
+
+        $data['total2'] = $method->sum('tblpaymentmethod.amount');
+
+        $data['student'] = DB::connection('mysql2')->table('students')
+                           ->join('sessions AS A1', 'students.intake', 'A1.SessionID')
+                           ->join('sessions AS A2', 'students.session', 'A2.SessionID')
+                           ->join('tblprogramme', 'students.program', 'tblprogramme.id')
+                           ->join('tblstudent_status', 'students.status', 'tblstudent_status.id')
+                           ->select('students.*', 'tblprogramme.progname AS program', 'tblstudent_status.name AS status', 'A1.SessionName AS intake', 'A2.SessionName AS session')
+                           ->where('students.ic', $data['payment']->student_ic)
+                           ->first();
+
+        $data['date'] = Carbon::createFromFormat('Y-m-d', $data['payment']->date)->format('d/m/Y');
+
+        return view('hostel.student.receipt', compact('data'));
+
+    }
+
     public function studentHostelReport()
     {
 

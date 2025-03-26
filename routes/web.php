@@ -61,6 +61,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/hostel/student/checkout/getStudentInfo2', [App\Http\Controllers\HostelController::class, 'getStudentInfo2']);
     Route::post('/hostel/student/checkout/checkoutStudent', [App\Http\Controllers\HostelController::class, 'checkoutStudent']);
     Route::get('/hostel/student/printStudentSlip/{student}', [App\Http\Controllers\HostelController::class, 'printStudentSlip'])->name('hostel.student.printSlip');
+    Route::get('/hostel/student/quotationStudentSlip/{student}', [App\Http\Controllers\HostelController::class, 'quotationStudentSlip'])->name('hostel.student.quotationSlip');
+    Route::get('/hostel/student/chargeStudentSlip/{student}', [App\Http\Controllers\HostelController::class, 'chargeStudentSlip'])->name('hostel.student.chargeSlip');
+    Route::get('/hostel/student/receipt/{id}', [App\Http\Controllers\HostelController::class, 'getReceipt'])->name('hostel.student.receipt');
     Route::get('/hostel/debit', [App\Http\Controllers\HostelController::class, 'debitNote'])->name('hostel.student.debit');
     Route::post('/hostel/debit/getStudent', [App\Http\Controllers\HostelController::class, 'getStudentDebit']);
     Route::post('/hostel/debit/storeDebit', [App\Http\Controllers\HostelController::class, 'storeDebit']);
