@@ -2459,7 +2459,7 @@ class HostelController extends Controller
             ->orwhere('students.ic', 'LIKE', $request->search."%")
             ->orwhere('students.no_matric', 'LIKE', $request->search."%")
             ->where('tblclaim.process_status_id', 2)
-            ->groupBy('tblclaim.id')
+            ->groupBy('tblclaim.id', 'tblclaim.remark', 'tblclaim.date', 'tblclaim.ref_no', 'tblclaim.process_type_id', 'tblprocess_status.name', 'students.no_matric', 'students.name', 'students.ic')
             ->select('tblclaim.id', 'tblclaim.remark', 'tblclaim.date AS unified_date', 'tblclaim.ref_no','tblclaim.date AS date', 'tblclaim.process_type_id', DB::raw('SUM(tblclaimdtl.amount) AS amount'), 'tblprocess_status.name AS status', 'students.no_matric', 'students.name AS name', 'students.ic')
             ->orderBy('unified_date', 'desc')
             ->get();
