@@ -247,6 +247,7 @@
 						<li><a href="{{ route('hostel.register') }}" class="{{ (route('hostel.register') == Request::url()) ? 'active' : ''}}">Hostel Registration</a></li>
 						<li><a href="{{ route('hostel.student.checkout') }}" class="{{ (route('hostel.student.checkout') == Request::url()) ? 'active' : ''}}">Hostel Checkout</a></li>
 						<li><a href="{{ route('hostel.student.debit') }}" class="{{ (route('hostel.student.debit') == Request::url()) ? 'active' : ''}}">Debit Note</a></li>
+						<li><a href="{{ route('hostel.receiptList') }}" class="{{ (route('hostel.receiptList') == Request::url()) ? 'active' : ''}}">Receipt List</a></li>
 						<li><a href="{{ route('all.student.announcements') }}" class="{{ (route('all.student.announcements') == Request::url()) ? 'active' : ''}}">Annoucement</a></li>
 					</ul>
 				</li>

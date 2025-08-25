@@ -2421,4 +2421,62 @@ class HostelController extends Controller
 
     }
 
+    public function receiptList()
+    {
+
+        return view('hostel.student.receipt_list.receiptList');
+
+    }
+
+    public function getReceiptList(Request $request)
+    {
+
+        if($request->refno != '')
+        {
+            // For OTR, HEA, TS users - only get tblclaim data
+            $data['student'] = DB::connection('mysql2')->table('tblclaim')
+            ->join('students', 'tblclaim.student_ic', 'students.ic')
+            ->join('tblprocess_status', 'tblclaim.process_status_id', 'tblprocess_status.id')
+            ->join('tblclaimdtl', 'tblclaim.id', 'tblclaimdtl.claim_id')
+            ->where('tblclaim.ref_no', 'LIKE', $request->refno."%")
+            ->where('tblclaim.process_status_id', 2)
+            ->select('tblclaim.id', 'tblclaim.remark', 'tblclaim.date AS unified_date', 'tblclaim.ref_no','tblclaim.date AS date', 'tblclaim.process_type_id', DB::raw('SUM(tblclaimdtl.amount) AS amount'), 'tblprocess_status.name AS status', 'students.no_matric', 'students.name AS name', 'students.ic')
+            ->orderBy('unified_date', 'desc')
+            ->get();
+
+        }elseif($request->search != '')
+        {
+            // For OTR, HEA, TS users - only get tblclaim data
+            $data['student'] = DB::connection('mysql2')->table('tblclaim')
+            ->join('students', 'tblclaim.student_ic', 'students.ic')
+            ->leftjoin('tblprocess_status', 'tblclaim.process_status_id', 'tblprocess_status.id')
+            ->leftjoin('tblclaimdtl', 'tblclaim.id', 'tblclaimdtl.claim_id')
+            ->where('students.name', 'LIKE', $request->search."%")
+            ->orwhere('students.ic', 'LIKE', $request->search."%")
+            ->orwhere('students.no_matric', 'LIKE', $request->search."%")
+            ->where('tblclaim.process_status_id', 2)
+            ->groupBy('tblclaim.id')
+            ->select('tblclaim.id', 'tblclaim.remark', 'tblclaim.date AS unified_date', 'tblclaim.ref_no','tblclaim.date AS date', 'tblclaim.process_type_id', DB::raw('SUM(tblclaimdtl.amount) AS amount'), 'tblprocess_status.name AS status', 'students.no_matric', 'students.name AS name', 'students.ic')
+            ->orderBy('unified_date', 'desc')
+            ->get();
+
+        }else{
+
+            return false;
+
+        }
+
+        if(isset($request->cancel))
+        {
+
+            return view('hostel.student.receipt_list.getReceiptList', compact('data'));
+
+        }else{
+
+            return view('hostel.student.receipt_list.getReceiptList', compact('data'));
+
+        }
+
+    }
+
 }
