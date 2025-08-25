@@ -40,7 +40,7 @@
                                 @foreach ($data['student'] as $key => $req)
                                 <tr>
                                     <td>
-                                    <a href="/finance/report/receiptlist/getReceiptProof?id={{ $req->id }}&type={{ $req->process_type_id }}" target="_blank">
+                                    {{-- <a href="/finance/report/receiptlist/getReceiptProof?id={{ $req->id }}&type={{ $req->process_type_id }}" target="_blank"> --}}
                                     @if ($req->process_type_id == 7)
                                     PENAJA
                                     @else
