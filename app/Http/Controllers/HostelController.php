@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 use Carbon\Carbon;
+use Exception;
 
 class HostelController extends Controller
 {
@@ -80,7 +83,7 @@ class HostelController extends Controller
                         if($ex->getCode() == 23000){
                             return ["message"=>"Class code already existed inside the system"];
                         }else{
-                            \Log::debug($ex);
+                            Log::debug($ex);
                             return ["message"=>"DB Error"];
                         }
                     }
@@ -202,7 +205,7 @@ class HostelController extends Controller
                         if($ex->getCode() == 23000){
                             return ["message"=>"Class code already existed inside the system"];
                         }else{
-                            \Log::debug($ex);
+                            Log::debug($ex);
                             return ["message"=>"DB Error"];
                         }
                     }
@@ -349,7 +352,7 @@ class HostelController extends Controller
                         if($ex->getCode() == 23000){
                             return ["message"=>"Class code already existed inside the system"];
                         }else{
-                            \Log::debug($ex);
+                            Log::debug($ex);
                             return ["message"=>"DB Error"];
                         }
                     }
@@ -581,7 +584,7 @@ class HostelController extends Controller
                         if($ex->getCode() == 23000){
                             return ["message"=>"Class code already existed inside the system"];
                         }else{
-                            \Log::debug($ex);
+                            Log::debug($ex);
                             return ["message"=>"DB Error"];
                         }
                     }
@@ -694,9 +697,9 @@ class HostelController extends Controller
             $student->where('students.program', $request->program);
         }
         
-        if(!empty($request->session) && $request->session != '-')
+        if(!empty($request->input('session')) && $request->input('session') != '-')
         {
-            $student->where('students.session', $request->session);
+            $student->where('students.session', $request->input('session'));
         }
         
         if(!empty($request->year) && $request->year != '-')
@@ -1223,7 +1226,7 @@ class HostelController extends Controller
                 if($ex->getCode() == 23000){
                     return ["message"=>"Class code already existed inside the system"];
                 }else{
-                    \Log::debug($ex);
+                    Log::debug($ex);
                     return ["message"=>"DB Error"];
                 }
             }
@@ -2440,6 +2443,7 @@ class HostelController extends Controller
             ->join('tblclaimdtl', 'tblclaim.id', 'tblclaimdtl.claim_id')
             ->where('tblclaim.ref_no', 'LIKE', $request->refno."%")
             ->where('tblclaim.process_status_id', 2)
+            ->groupBy('tblclaim.id', 'tblclaim.remark', 'tblclaim.date', 'tblclaim.ref_no', 'tblclaim.process_type_id', 'tblprocess_status.name', 'students.no_matric', 'students.name', 'students.ic')
             ->select('tblclaim.id', 'tblclaim.remark', 'tblclaim.date AS unified_date', 'tblclaim.ref_no','tblclaim.date AS date', 'tblclaim.process_type_id', DB::raw('SUM(tblclaimdtl.amount) AS amount'), 'tblprocess_status.name AS status', 'students.no_matric', 'students.name AS name', 'students.ic')
             ->orderBy('unified_date', 'desc')
             ->get();
@@ -2455,7 +2459,7 @@ class HostelController extends Controller
             ->orwhere('students.ic', 'LIKE', $request->search."%")
             ->orwhere('students.no_matric', 'LIKE', $request->search."%")
             ->where('tblclaim.process_status_id', 2)
-            ->groupBy('tblclaim.ref_no')
+            ->groupBy('tblclaim.id')
             ->select('tblclaim.id', 'tblclaim.remark', 'tblclaim.date AS unified_date', 'tblclaim.ref_no','tblclaim.date AS date', 'tblclaim.process_type_id', DB::raw('SUM(tblclaimdtl.amount) AS amount'), 'tblprocess_status.name AS status', 'students.no_matric', 'students.name AS name', 'students.ic')
             ->orderBy('unified_date', 'desc')
             ->get();
