@@ -1405,6 +1405,9 @@ class HostelController extends Controller
         // Check if payment has already been made today
         $existingPayment = DB::connection('mysql2')->table('tblpayment')
             ->where('student_ic', $student)
+            ->where('process_type_id', 8)
+            ->where('process_status_id', 2)
+            ->where('amount', 5)
             ->whereDate('date', date('Y-m-d'))
             ->first();
 
