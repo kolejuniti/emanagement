@@ -630,7 +630,7 @@ function confirmPayment() {
                                             </tr>
                                             <tr>
                                                 <td>Amount</td>
-                                                <td>RM 5.00</td>
+                                                <td>RM 10.00</td>
                                             </tr>
                                         </tbody>
                                     </table>

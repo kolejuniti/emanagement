@@ -1407,7 +1407,7 @@ class HostelController extends Controller
             ->where('student_ic', $student)
             ->where('process_type_id', 8)
             ->where('process_status_id', 2)
-            ->where('amount', 5)
+            ->where('amount', 10)
             ->whereDate('date', date('Y-m-d'))
             ->first();
 
@@ -1426,7 +1426,7 @@ class HostelController extends Controller
             'program_id' => $stddetail->program,
             'session_id' => $stddetail->session,
             'semester_id' => $stddetail->semester,
-            'amount' => 5,
+            'amount' => 10,
             'process_status_id' => 2,
             'process_type_id' => 8,
             'add_staffID' => '123455432123',
@@ -1440,7 +1440,7 @@ class HostelController extends Controller
             'claim_method_id' => 1,
             'bank_id' => null,
             'no_document' => null,
-            'amount' => 5,
+            'amount' => 10,
             'add_staffID' => '123455432123',
             'add_date' => date('Y-m-d'),
             'mod_staffID' => '123455432123',
@@ -1450,7 +1450,7 @@ class HostelController extends Controller
         DB::connection('mysql2')->table('tblpaymentdtl')->insert([
             'payment_id' => $payment,
             'claim_type_id' => 79,
-            'amount' => 5,
+            'amount' => 10,
             'add_staffID' => '123455432123',
             'add_date' => date('Y-m-d'),
             'mod_staffID' => '123455432123',
